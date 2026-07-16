@@ -6,7 +6,10 @@
 
 <Categories />
 
-<FeaturedProducts />
+<FeaturedProducts
+title="Featured Products"
+subtitle="Premium gadgets carefully selected for you."
+/>
 
 <WhyChoose />
 

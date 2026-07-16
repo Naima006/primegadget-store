@@ -1,71 +1,61 @@
 <template>
   <header class="navbar">
-
     <div class="container nav-wrapper">
 
-      <RouterLink
-        to="/"
-        class="logo"
-      >
+      <button class="menu-btn" @click="toggleMenu">
+        <i :class="mobileMenu ? 'bi bi-x-lg' : 'bi bi-list'"></i>
+      </button>
+
+      <RouterLink to="/" class="logo" @click="closeMenu">
         Prime<span>Gadget</span>
       </RouterLink>
 
-      <nav>
-
-        <RouterLink to="/">Home</RouterLink>
-
-        <RouterLink to="/shop">Shop</RouterLink>
-
-        <a href="#">Categories</a>
-
-        <a href="#">About</a>
-
+      <nav :class="{ active: mobileMenu }">
+        <RouterLink to="/" @click="closeMenu">Home</RouterLink>
+        <RouterLink to="/shop" @click="closeMenu">Shop</RouterLink>
+        <a href="/about" @click="closeMenu">About</a>
       </nav>
 
       <div class="actions">
-
-        <button class="icon-btn">
-          <i class="bi bi-search"></i>
-        </button>
-
-        <RouterLink
-          class="icon-btn cart"
-          to="/cart"
-        >
-
+        
+        <RouterLink class="icon-btn cart" to="/cart">
           <i class="bi bi-cart3"></i>
-
-          <span
-            v-if="cart.items.length"
-            class="badge"
-          >
-
+          <span v-if="cart.items.length" class="badge">
             {{ cart.items.length }}
-
           </span>
-
         </RouterLink>
 
-        <RouterLink
-          class="login-btn"
-          to="/login"
-        >
-
-          Login
-
+        <RouterLink class="login-btn" to="/profile">
+          <i class="bi bi-person-circle"></i>
+          <span>Profile</span>
         </RouterLink>
 
-      </div>
-
+        </div>
     </div>
 
+    <div v-if="mobileMenu" class="overlay" @click="toggleMenu"></div>
+    
   </header>
-
 </template>
 
 <script setup>
 
+import { ref } from "vue"
 import { cart } from "../stores/cart"
+
+const mobileMenu = ref(false)
+
+function toggleMenu(){
+
+    mobileMenu.value = !mobileMenu.value
+
+}
+
+function closeMenu(){
+
+    mobileMenu.value = false
+
+}
 
 </script>
 
@@ -199,23 +189,141 @@ font-weight:700;
 
 }
 
-.login-btn{
-
-background:var(--primary);
-
-padding:10px 22px;
-
-border-radius:50px;
-
-font-weight:600;
-
-color:black;
-
+.login-btn {
+  background: var(--primary);
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-weight: 600;
+  color: black;
+  /* Add the following 3 lines: */
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Adjust this value to increase/decrease the space */
 }
 
 .login-btn:hover{
 
 transform:translateY(-2px);
+
+}
+
+.menu-btn{
+
+display:none;
+
+background:none;
+
+color:white;
+
+font-size:30px;
+
+}
+
+@media(max-width:992px){
+
+.menu-btn{
+
+display:block;
+
+z-index:1002;
+
+}
+
+nav{
+
+position:fixed;
+
+top:0;
+
+left:-280px;
+
+width:260px;
+
+height:100vh;
+
+background:#111;
+
+padding:120px 30px;
+
+display:flex;
+
+flex-direction:column;
+
+gap:30px;
+
+transition:.35s;
+
+z-index:1001;
+
+}
+
+nav.active{
+
+left:0;
+
+}
+
+.overlay{
+
+position:fixed;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:100vh;
+
+background:rgba(0,0,0,.45);
+
+backdrop-filter:blur(4px);
+
+z-index:1000;
+
+}
+
+.actions{
+
+gap:12px;
+
+}
+
+.login-btn span {
+    display: none;
+  }
+
+  .login-btn {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Add the following two lines to fix the stretching: */
+    padding: 0; 
+    width: 42px; 
+    height: 42px;
+  }
+}
+
+@media(max-width:576px){
+
+.logo{
+
+font-size:24px;
+
+}
+
+.actions{
+
+gap:8px;
+
+}
+
+.icon-btn{
+
+font-size:20px;
+
+}
 
 }
 

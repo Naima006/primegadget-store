@@ -6,36 +6,36 @@
 
 <div class="heading">
 
-<h2>Featured Products</h2>
+<h2>{{ title }}</h2>
 
-<p>Premium gadgets carefully selected for you.</p>
+<p>{{ subtitle }}</p>
 
 </div>
 
 <div class="toolbar">
 
-<input
-v-model="search"
-placeholder="Search gadgets..."
->
+    <input
+    v-model="search"
+    placeholder="Search gadgets..."
+    >
 
-<select v-model="category">
+    <select v-model="category">
 
-<option>All</option>
+    <option>All</option>
 
-<option>Headphones</option>
+    <option>Headphones</option>
 
-<option>Earbuds</option>
+    <option>Earbuds</option>
 
-<option>Laptop</option>
+    <option>Laptop</option>
 
-<option>Phone</option>
+    <option>Phone</option>
 
-<option>Watch</option>
+    <option>Watch</option>
 
-<option>Accessories</option>
+    <option>Accessories</option>
 
-</select>
+    </select>
 
 </div>
 
@@ -66,6 +66,27 @@ import products from "../assets/data/products.json"
 
 import { addToCart } from "../stores/cart";
 
+
+const props = defineProps({
+
+title:{
+
+type:String,
+
+default:"Featured Products"
+
+},
+
+subtitle:{
+
+type:String,
+
+default:"Premium gadgets carefully selected for you."
+
+}
+
+})
+
 const search = ref("")
 
 const category = ref("All")
@@ -91,7 +112,7 @@ return matchesSearch&&matchesCategory
 
 .products{
 
-padding:100px 0;
+padding:50px 0;
 
 }
 
@@ -139,6 +160,37 @@ border:1px solid #ddd;
 
 font-size:16px;
 
+}
+
+input, select {
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+/* 1. Target the input specifically to make it wider */
+input {
+    flex: 1; /* Allows the search bar to stretch */
+    max-width: 1200px; /* Prevents it from getting too massive on ultra-wide screens */
+    width: 100%;
+}
+
+/* The select box will naturally just take up the space it needs for its text */
+
+/* 2. Make it responsive on smaller screens */
+@media (max-width: 576px) {
+    .toolbar {
+        flex-direction: column; /* Stacks the search bar and category dropdown */
+    }
+    
+    input {
+        max-width: 100%; /* Spans the full width of the mobile screen */
+    }
+    
+    select {
+        width: 100%; /* Makes the dropdown full width on mobile as well */
+    }
 }
 
 .grid{

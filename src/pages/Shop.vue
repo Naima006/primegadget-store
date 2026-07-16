@@ -1,17 +1,24 @@
 <template>
 
-  <MainLayout>
+<MainLayout>
 
-    <div class="container">
-      <h1>Shop Page</h1>
-    </div>
+<ShopHero />
 
-  </MainLayout>
+<FeaturedProducts
+title="Featured Products"
+subtitle="Premium gadgets carefully selected for you."
+/>
+
+</MainLayout>
 
 </template>
 
 <script setup>
 
 import MainLayout from "../layouts/MainLayout.vue"
+
+import ShopHero from "../components/ShopHero.vue"
+
+import FeaturedProducts from "../components/FeaturedProducts.vue"
 
 </script>

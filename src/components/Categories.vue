@@ -43,7 +43,7 @@
 <style scoped>
 
 .categories{
-    padding:90px 0;
+    padding:50px 0;
     background:#f7f8fa;
 }
 

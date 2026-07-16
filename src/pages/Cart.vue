@@ -127,11 +127,14 @@ Continue Shopping
 
 </RouterLink>
 
-<button class="checkout">
+<RouterLink
+to="/checkout"
+class="checkout"
+>
 
 Proceed to Checkout
 
-</button>
+</RouterLink>
 
 </div>
 
@@ -395,6 +398,10 @@ font-weight:700;
 
 .checkout{
 
+display:block;
+
+text-align:center;
+
 width:100%;
 
 margin-top:25px;
@@ -406,6 +413,10 @@ background:var(--primary);
 border-radius:50px;
 
 font-weight:700;
+
+color:#000;
+
+text-decoration:none;
 
 }
 

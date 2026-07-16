@@ -1,8 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
 
+import About from "../pages/About.vue";
 import Cart from "../pages/Cart.vue";
+import Checkout from "../pages/Checkout.vue";
 import Home from "../pages/Home.vue";
 import Login from "../pages/Login.vue";
+import Orders from "../pages/Orders.vue";
 import Profile from "../pages/Profile.vue";
 import Register from "../pages/Register.vue";
 import Shop from "../pages/Shop.vue";
@@ -19,9 +22,24 @@ const routes = [
     component: Shop,
   },
   {
+    path: "/about",
+    name: "about",
+    component: About
+  },
+  {
     path: "/cart",
     name: "Cart",
     component: Cart,
+  },
+  {
+    path: "/checkout",
+    name: "checkout",
+    component: Checkout
+  },
+  {
+    path: "/orders",
+    name: "orders",
+    component: Orders
   },
   {
     path: "/login",
