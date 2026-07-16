@@ -95,8 +95,12 @@ const filteredProducts = computed(() => {
 
 return products.filter(product=>{
 
-const matchesSearch=product.name.toLowerCase().includes(search.value.toLowerCase())
+const keyword = search.value.toLowerCase()
 
+const matchesSearch =
+  product.name.toLowerCase().includes(keyword) ||
+  product.category.toLowerCase().includes(keyword)
+  
 const matchesCategory=category.value==="All"||product.category===category.value
 
 return matchesSearch&&matchesCategory
