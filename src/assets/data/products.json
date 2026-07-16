@@ -1,0 +1,45 @@
+[
+  {
+    "id": 1,
+    "name": "Sony WH-1000XM4",
+    "category": "Headphones",
+    "price": 229,
+    "image": "https://png.pngtree.com/png-clipart/20240428/original/pngtree-isolated-of-sony-wh-1000xm5-wireless-headphones-front-view-featuring-a-png-image_14964838.png"
+  },
+  {
+    "id": 2,
+    "name": "Logitech G PRO X2 SUPERSTRIKE",
+    "category": "Accessories",
+    "price": 179,
+    "image": "https://www.logitech.com/blog/wp-content/uploads/2025/08/pro-x2-superstrike-1140x570.png"
+    
+  },
+  {
+    "id": 3,
+    "name": "MacBook Air M4",
+    "category": "Laptop",
+    "price": 1299,
+    "image": "https://media.machines.com.my/Shopify_IMG/Apple_HTML_Asset/mba-m4/hero_small.png"
+  },
+  {
+    "id": 4,
+    "name": "iPhone 16 Pro",
+    "category": "Phone",
+    "price": 1199,
+    "image": "https://stratanetworks.com/wp-content/uploads/2024/09/iPhone-16-Pro.png"
+  },
+  {
+    "id": 5,
+    "name": "Apple Watch Ultra",
+    "category": "Watch",
+    "price": 799,
+    "image": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=800"
+  },
+  {
+    "id": 6,
+    "name": "Samsung Galaxy Buds4 Pro",
+    "category": "Earbuds",
+    "price": 249,
+    "image": "https://assets.gadgetandgear.com/upload/media/Samsung%20Galaxy%20Buds%204%20Pro/samsung-galaxy-buds-4-pro.jpeg"
+  }
+]
