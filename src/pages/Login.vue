@@ -1,14 +1,17 @@
 <template>
 
-<Navbar />
+  <MainLayout>
 
-<div class="container">
-    <h1>Login</h1>
+    <div class="container">
+      <h1>Login</h1>
+    </div>
 
-</div>
+  </MainLayout>
 
 </template>
 
 <script setup>
-import Navbar from "../components/Navbar.vue"
+
+import MainLayout from "../layouts/MainLayout.vue"
+
 </script>

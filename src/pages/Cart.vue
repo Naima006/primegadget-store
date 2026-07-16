@@ -1,41 +1,51 @@
 <template>
 
-<Navbar />
+<MainLayout>
+
+<section class="cart-page">
 
 <div class="container">
 
+<div class="page-title">
+
 <h1>Shopping Cart</h1>
+
+<p>Your selected gadgets are ready for checkout.</p>
+
+</div>
 
 <div
 v-if="cart.items.length"
+class="cart-layout"
 >
 
+<div class="cart-items">
+
 <div
-class="item"
+class="cart-card"
 v-for="item in cart.items"
 :key="item.id"
 >
 
 <img
 :src="item.image"
->
+:alt="item.name"
+/>
 
-<div>
+<div class="details">
 
 <h3>{{ item.name }}</h3>
 
-<p>${{ item.price }}</p>
+<p>{{ item.category }}</p>
+
+<h4>${{ item.price }}</h4>
 
 </div>
 
 <div class="quantity">
 
-<button
-@click="decreaseQuantity(item.id)"
->
-
+<button @click="decreaseQuantity(item.id)">
 -
-
 </button>
 
 <span>
@@ -44,23 +54,25 @@ v-for="item in cart.items"
 
 </span>
 
-<button
-@click="increaseQuantity(item.id)"
->
-
+<button @click="increaseQuantity(item.id)">
 +
-
 </button>
 
 </div>
 
+<div class="price">
+
+${{ item.price * item.quantity }}
+
+</div>
+
 <button
-class="delete"
+class="remove"
 
 @click="removeFromCart(item.id)"
 >
 
-Remove
+<i class="bi bi-trash"></i>
 
 </button>
 
@@ -68,19 +80,102 @@ Remove
 
 </div>
 
-<p v-else>
+<div class="summary">
 
-Your cart is empty.
+<h2>Order Summary</h2>
+
+<div class="row">
+
+<span>Subtotal</span>
+
+<span>${{ subtotal }}</span>
+
+</div>
+
+<div class="row">
+
+<span>Shipping</span>
+
+<span>Free</span>
+
+</div>
+
+<div class="row">
+
+<span>Tax</span>
+
+<span>${{ tax }}</span>
+
+</div>
+
+<hr>
+
+<div class="row total">
+
+<span>Total</span>
+
+<span>${{ total }}</span>
+
+</div>
+
+<RouterLink
+to="/shop"
+class="continue"
+>
+
+Continue Shopping
+
+</RouterLink>
+
+<button class="checkout">
+
+Proceed to Checkout
+
+</button>
+
+</div>
+
+</div>
+
+<div
+v-else
+class="empty"
+>
+
+<i class="bi bi-cart-x"></i>
+
+<h2>Your cart is empty</h2>
+
+<p>
+
+Looks like you haven't added any gadgets yet.
 
 </p>
 
+<RouterLink
+to="/shop"
+class="shop-btn"
+>
+
+Go Shopping
+
+</RouterLink>
+
 </div>
+
+</div>
+
+</section>
+
+</MainLayout>
 
 </template>
 
 <script setup>
 
-import Navbar from "../components/Navbar.vue"
+import { computed } from "vue"
+
+import MainLayout from "../layouts/MainLayout.vue"
 
 import {
 
@@ -96,39 +191,107 @@ decreaseQuantity
 
 from "../stores/cart"
 
+const subtotal = computed(() =>
+
+cart.items.reduce(
+
+(sum,item)=>
+
+sum + item.price * item.quantity
+
+,0)
+
+)
+
+const tax = computed(()=>
+
+Math.round(subtotal.value*0.05)
+
+)
+
+const total = computed(()=>
+
+subtotal.value+tax.value
+
+)
+
 </script>
 
 <style scoped>
 
-.container{
+.cart-page{
 
-padding:120px 0;
+padding:140px 0 80px;
 
-width:90%;
+background:#f6f7f9;
 
-margin:auto;
+min-height:100vh;
 
 }
 
-.item{
+.page-title{
+
+margin-bottom:40px;
+
+}
+
+.page-title h1{
+
+font-size:44px;
+
+margin-bottom:10px;
+
+}
+
+.page-title p{
+
+color:#777;
+
+}
+
+.cart-layout{
+
+display:grid;
+
+grid-template-columns:2fr 1fr;
+
+gap:35px;
+
+align-items:start;
+
+}
+
+.cart-items{
 
 display:flex;
 
-justify-content:space-between;
+flex-direction:column;
 
-align-items:center;
+gap:25px;
 
-padding:20px;
+}
 
-margin-bottom:20px;
+.cart-card{
 
 background:white;
 
 border-radius:20px;
 
+padding:25px;
+
+display:grid;
+
+grid-template-columns:120px 1fr auto auto auto;
+
+align-items:center;
+
+gap:25px;
+
+box-shadow:0 8px 25px rgba(0,0,0,.06);
+
 }
 
-img{
+.cart-card img{
 
 width:120px;
 
@@ -138,13 +301,21 @@ object-fit:contain;
 
 }
 
+.details p{
+
+color:#777;
+
+margin:8px 0;
+
+}
+
 .quantity{
 
 display:flex;
 
-gap:15px;
-
 align-items:center;
+
+gap:12px;
 
 }
 
@@ -158,17 +329,153 @@ border-radius:50%;
 
 background:var(--primary);
 
+font-weight:700;
+
 }
 
-.delete{
+.price{
 
-background:red;
+font-size:20px;
+
+font-weight:700;
+
+}
+
+.remove{
+
+background:#ff4d4d;
 
 color:white;
 
-padding:10px 18px;
+padding:12px;
 
-border-radius:10px;
+border-radius:12px;
+
+}
+
+.summary{
+
+background:white;
+
+padding:30px;
+
+border-radius:20px;
+
+position:sticky;
+
+top:120px;
+
+box-shadow:0 10px 30px rgba(0,0,0,.06);
+
+}
+
+.summary h2{
+
+margin-bottom:25px;
+
+}
+
+.row{
+
+display:flex;
+
+justify-content:space-between;
+
+margin:18px 0;
+
+}
+
+.total{
+
+font-size:22px;
+
+font-weight:700;
+
+}
+
+.checkout{
+
+width:100%;
+
+margin-top:25px;
+
+padding:16px;
+
+background:var(--primary);
+
+border-radius:50px;
+
+font-weight:700;
+
+}
+
+.continue{
+
+display:block;
+
+margin-top:20px;
+
+text-align:center;
+
+color:#666;
+
+}
+
+.empty{
+
+text-align:center;
+
+padding:100px 0;
+
+}
+
+.empty i{
+
+font-size:90px;
+
+color:#bbb;
+
+margin-bottom:20px;
+
+}
+
+.shop-btn{
+
+display:inline-block;
+
+margin-top:25px;
+
+padding:15px 35px;
+
+background:var(--primary);
+
+border-radius:50px;
+
+font-weight:700;
+
+}
+
+@media(max-width:1000px){
+
+.cart-layout{
+
+grid-template-columns:1fr;
+
+}
+
+.summary{
+
+position:static;
+
+}
+
+.cart-card{
+
+grid-template-columns:1fr;
+
+text-align:center;
+
+}
 
 }
 
