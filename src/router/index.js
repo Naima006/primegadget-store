@@ -9,6 +9,7 @@ import Orders from "../pages/Orders.vue";
 import Profile from "../pages/Profile.vue";
 import Register from "../pages/Register.vue";
 import Shop from "../pages/Shop.vue";
+import NotFound from "../pages/NotFound.vue";
 
 const routes = [
   {
@@ -55,6 +56,11 @@ const routes = [
     path: "/profile",
     name: "Profile",
     component: Profile,
+  },
+  {
+  path: "/:pathMatch(.*)*",
+  name: "NotFound",
+  component: NotFound,
   },
 ];
 

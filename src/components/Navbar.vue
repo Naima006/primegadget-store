@@ -13,7 +13,7 @@
       <nav :class="{ active: mobileMenu }">
         <RouterLink to="/" @click="closeMenu">Home</RouterLink>
         <RouterLink to="/shop" @click="closeMenu">Shop</RouterLink>
-        <a href="/about" @click="closeMenu">About</a>
+        <RouterLink to="/about" @click="closeMenu">About</RouterLink>
       </nav>
 
       <div class="actions">
