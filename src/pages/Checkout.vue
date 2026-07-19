@@ -149,6 +149,8 @@ import { cart } from "../stores/cart"
 
 import { addOrder } from "../stores/orders"
 
+import { toast } from "../stores/toast"
+
 const router = useRouter()
 
 const customer = reactive({
@@ -186,7 +188,7 @@ function placeOrder() {
         !customer.address
     ) {
 
-        alert("Please complete all fields.")
+        toast.open("Please complete all fields.", "error")
 
         return
 
@@ -206,7 +208,7 @@ function placeOrder() {
 
     })
 
-    alert("Order placed successfully!")
+    toast.open("Order placed successfully!", "success")
 
     cart.items = []
 
@@ -233,6 +235,7 @@ margin-bottom:40px;
 
 }
 
+
 .checkout-grid{
 
 display:grid;
@@ -251,6 +254,10 @@ padding:35px;
 
 border-radius:20px;
 
+}
+
+.form-section h2{
+    padding-bottom: 25px;
 }
 
 .form-section input,
@@ -277,12 +284,18 @@ resize:none;
 
 }
 
-label{
+label {
+    display: flex;      
+    align-items: center; 
+    gap: 12px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
 
-display:block;
-
-margin-bottom:15px;
-
+/* Optional: Ensure the radio button doesn't shrink */
+label input[type="radio"] {
+    width: auto;
+    margin-bottom: 0;
 }
 
 .place-order{

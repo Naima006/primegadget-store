@@ -40,6 +40,19 @@ Order #{{ order.id }}
 
 </div>
 
+<div class="status-row">
+
+    <span
+        class="status"
+        :class="(order.status || 'Pending').toLowerCase()"
+    >
+
+        {{ order.status || "Pending" }}
+
+    </span>
+
+</div>
+
 <div
 class="product"
 v-for="item in order.items"
@@ -201,6 +214,66 @@ font-weight:700;
 color:#000;
 
 text-decoration:none;
+
+}
+
+.status-row{
+
+margin-bottom:20px;
+
+}
+
+.status{
+
+display:inline-block;
+
+padding:8px 18px;
+
+border-radius:50px;
+
+font-size:14px;
+
+font-weight:700;
+
+}
+
+.pending{
+
+background:#FFF4CC;
+
+color:#B8860B;
+
+}
+
+.confirmed{
+
+background:#D6F5FF;
+
+color:#0077B6;
+
+}
+
+.packed{
+
+background:#EFE2FF;
+
+color:#7B2CBF;
+
+}
+
+.shipped{
+
+background:#FFE8CC;
+
+color:#E85D04;
+
+}
+
+.delivered{
+
+background:#D8F3DC;
+
+color:#2D6A4F;
 
 }
 

@@ -11,6 +11,7 @@ import Register from "../pages/Register.vue";
 import Shop from "../pages/Shop.vue";
 import NotFound from "../pages/NotFound.vue";
 
+
 const routes = [
   {
     path: "/",

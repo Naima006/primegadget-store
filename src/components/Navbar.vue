@@ -43,6 +43,7 @@
 import { ref } from "vue"
 import { cart } from "../stores/cart"
 
+
 const mobileMenu = ref(false)
 
 function toggleMenu(){
