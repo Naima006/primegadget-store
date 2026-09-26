@@ -145,7 +145,7 @@ import { useRouter } from "vue-router"
 
 import MainLayout from "../layouts/MainLayout.vue"
 
-import { cart } from "../stores/cart"
+import { cart, clearCart } from "../stores/cart"
 
 import { addOrder } from "../stores/orders"
 
@@ -230,8 +230,7 @@ function placeOrder() {
   })
 
   toast.open("Order placed successfully!", "success")
-  cart.items = []
-  localStorage.removeItem("cart")
+  clearCart()
   router.push("/orders")
 }
 </script>

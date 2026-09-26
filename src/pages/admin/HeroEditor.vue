@@ -46,14 +46,8 @@
           </div>
 
           <div class="form-group">
-            <label>Hero Image URL</label>
-            <input
-              v-model="local.image"
-              placeholder="https://... or /src/assets/images/..."
-            />
-            <div v-if="local.image" class="img-preview">
-              <img :src="local.image" alt="Hero preview" />
-            </div>
+            <label>Hero Image</label>
+            <ImageUpload v-model="local.image" />
           </div>
 
           <div class="form-row">
@@ -129,6 +123,7 @@
 <script setup>
 import { ref, computed, watch } from "vue"
 import AdminLayout from "../../layouts/AdminLayout.vue"
+import ImageUpload from "../../components/ImageUpload.vue"
 import { hero } from "../../stores/hero"
 import { toast } from "../../stores/toast"
 

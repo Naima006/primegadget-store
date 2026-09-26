@@ -1,5 +1,5 @@
 <template>
-  <div class="product-card">
+  <div class="product-card" @click="$emit('open', product)" role="button" tabindex="0" @keyup.enter="$emit('open', product)">
     <!-- Favorite button -->
     <button
       class="fav-btn"
@@ -31,17 +31,17 @@
 
     <div class="actions">
       <div class="stepper">
-        <button @click="decrease" aria-label="Decrease quantity">−</button>
+        <button @click.stop="decrease" aria-label="Decrease quantity">−</button>
         <span>{{ quantity }}</span>
-        <button @click="increase" aria-label="Increase quantity">+</button>
+        <button @click.stop="increase" aria-label="Increase quantity">+</button>
       </div>
 
-      <button class="cart-btn" @click="handleAdd">
+      <button class="cart-btn" @click.stop="handleAdd">
         Add to Cart
       </button>
     </div>
 
-    <button class="buy-btn" @click="handleBuyNow">
+    <button class="buy-btn" @click.stop="handleBuyNow">
       Buy Now
     </button>
 
@@ -117,6 +117,7 @@ function handleBuyNow() {
 
 <style scoped>
 .product-card {
+  cursor: pointer;
   background: white;
   border-radius: 24px;
   padding: 24px;
@@ -180,7 +181,7 @@ function handleBuyNow() {
   display: inline-block;
   font-size: 12px;
   font-weight: 600;
-  color: var(--primary);
+  color: #8fc31f;
   background: rgba(198, 255, 74, 0.15);
   padding: 4px 12px;
   border-radius: 20px;
@@ -327,6 +328,7 @@ h3 {
 /* Responsive tweaks */
 @media (max-width: 576px) {
   .product-card {
+  cursor: pointer;
     padding: 18px;
   }
 

@@ -38,7 +38,12 @@
 v-for="product in filteredProducts"
 :key="product.id"
 :product="product"
-@add-cart="addToCart"
+@open="selected = $event"
+/>
+
+<ProductDetailModal
+:product="selected"
+@close="selected = null"
 />
 
 </div>
@@ -53,8 +58,10 @@ v-for="product in filteredProducts"
 import { ref, computed, onMounted } from "vue"
 import { useRoute } from "vue-router"
 import ProductCard from "./ProductCard.vue"
+import ProductDetailModal from "./ProductDetailModal.vue"
 import { products as productsStore } from "../stores/products"
-import { addToCart } from "../stores/cart"
+
+const selected = ref(null)
 
 const props = defineProps({
   title: {

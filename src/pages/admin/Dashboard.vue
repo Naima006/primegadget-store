@@ -64,6 +64,10 @@
             <i class="bi bi-folder-plus"></i>
             <span>Manage Categories</span>
           </RouterLink>
+          <RouterLink to="/admin/orders" class="action-card">
+            <i class="bi bi-receipt"></i>
+            <span>Manage Orders</span>
+          </RouterLink>
           <RouterLink to="/admin/hero" class="action-card">
             <i class="bi bi-pencil-square"></i>
             <span>Edit Hero Section</span>
@@ -111,9 +115,9 @@ import { computed } from "vue"
 import AdminLayout from "../../layouts/AdminLayout.vue"
 import { auth } from "../../stores/auth"
 import { products } from "../../stores/products"
-import { orders } from "../../stores/orders"
+import { getAllOrders } from "../../stores/orders"
 
-const ordersCount = computed(() => orders.items?.length || 0)
+const ordersCount = computed(() => getAllOrders().length)
 
 const recentProducts = computed(() => {
   return [...products.items].slice(-5).reverse()

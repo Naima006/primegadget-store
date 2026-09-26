@@ -130,16 +130,8 @@
             </div>
 
             <div class="form-group">
-              <label>Image URL *</label>
-              <input
-                v-model="form.image"
-                required
-                placeholder="https://example.com/image.jpg"
-              />
-              <div v-if="form.image" class="img-preview">
-                <img :src="form.image" alt="Preview" @error="imgError = true" />
-                <span v-if="imgError" class="img-error">Image failed to load</span>
-              </div>
+              <label>Product Image *</label>
+              <ImageUpload v-model="form.image" />
             </div>
 
             <div class="form-group">
@@ -167,6 +159,7 @@
 <script setup>
 import { ref, computed, watch } from "vue"
 import AdminLayout from "../../layouts/AdminLayout.vue"
+import ImageUpload from "../../components/ImageUpload.vue"
 import { products } from "../../stores/products"
 import { toast } from "../../stores/toast"
 
@@ -231,6 +224,10 @@ function closeModal() {
 }
 
 function saveProduct() {
+  if (!form.value.image) {
+    toast.open("Please upload a product image.", "error")
+    return
+  }
   if (editing.value) {
     products.updateProduct(editing.value.id, { ...form.value })
     toast.open("Product updated successfully")

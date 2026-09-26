@@ -15,6 +15,7 @@ import Dashboard from "../pages/admin/Dashboard.vue"
 import AdminProducts from "../pages/admin/Products.vue"
 import AdminCategories from "../pages/admin/Categories.vue"
 import HeroEditor from "../pages/admin/HeroEditor.vue"
+import AdminOrders from "../pages/admin/Orders.vue"
 
 import { auth } from "../stores/auth"
 
@@ -87,6 +88,12 @@ const routes = [
     path: "/admin/hero",
     name: "AdminHero",
     component: HeroEditor,
+    meta: { requiresAdmin: true },
+  },
+  {
+    path: "/admin/orders",
+    name: "AdminOrders",
+    component: AdminOrders,
     meta: { requiresAdmin: true },
   },
   {

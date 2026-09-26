@@ -77,6 +77,7 @@ const navItems = [
   { to: "/admin", label: "Dashboard", icon: "bi bi-grid-1x2" },
   { to: "/admin/products", label: "Products", icon: "bi bi-box-seam" },
   { to: "/admin/categories", label: "Categories", icon: "bi bi-tags" },
+  { to: "/admin/orders", label: "Orders", icon: "bi bi-receipt" },
   { to: "/admin/hero", label: "Hero Section", icon: "bi bi-image" },
 ]
 

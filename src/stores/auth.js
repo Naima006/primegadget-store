@@ -2,7 +2,6 @@ import { reactive } from "vue"
 
 const savedUser = JSON.parse(localStorage.getItem("currentUser"))
 
-// Reserved admin credentials (demo / portfolio)
 export const ADMIN_EMAIL = "admin@primegadget.com"
 const ADMIN_PASSWORD = "admin123"
 
@@ -16,6 +15,10 @@ export const auth = reactive({
     this.isLoggedIn = true
     this.isAdmin = user.role === "admin"
     localStorage.setItem("currentUser", JSON.stringify(user))
+    // Lazy import to avoid circular dependency issues at module init
+    import("./cart").then((m) => m.reloadCart())
+    import("./orders").then((m) => m.reloadOrders())
+    import("./favorites").then((m) => m.reloadFavorites())
   },
 
   logout() {
@@ -23,6 +26,9 @@ export const auth = reactive({
     this.isLoggedIn = false
     this.isAdmin = false
     localStorage.removeItem("currentUser")
+    import("./cart").then((m) => m.reloadCart())
+    import("./orders").then((m) => m.reloadOrders())
+    import("./favorites").then((m) => m.reloadFavorites())
   },
 
   isReservedAdminEmail(email) {
@@ -46,22 +52,14 @@ export const auth = reactive({
     return false
   },
 
-  /**
-   * Login priority:
-   * 1. Always try admin credentials first (even if a regular user
-   *    previously registered with the same email).
-   * 2. Then fall back to registered users.
-   */
   userLogin(email, password) {
     const cleanEmail = (email || "").trim().toLowerCase()
     const cleanPassword = password || ""
 
-    // 1. Admin takes priority
     if (this.adminLogin(cleanEmail, cleanPassword)) {
       return { success: true, isAdmin: true }
     }
 
-    // 2. Registered users
     const users = JSON.parse(localStorage.getItem("users") || "[]")
     const found = users.find(
       (u) =>
@@ -70,7 +68,6 @@ export const auth = reactive({
     )
 
     if (found) {
-      // Never grant admin role to a self-registered account
       this.login({ ...found, role: "user" })
       return { success: true, isAdmin: false }
     }
