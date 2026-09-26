@@ -179,43 +179,60 @@ sum + item.price*item.quantity
 
 })
 
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((value || "").trim())
+}
+
 function placeOrder() {
+  if (!cart.items.length) {
+    toast.open("Your cart is empty.", "error")
+    return
+  }
 
-    if (
-        !customer.name ||
-        !customer.email ||
-        !customer.phone ||
-        !customer.address
-    ) {
+  const name = (customer.name || "").trim()
+  const email = (customer.email || "").trim()
+  const phone = (customer.phone || "").trim()
+  const address = (customer.address || "").trim()
 
-        toast.open("Please complete all fields.", "error")
+  if (!name || name.length < 2) {
+    toast.open("Please enter a valid full name.", "error")
+    return
+  }
+  if (!email || !isValidEmail(email)) {
+    toast.open("Please enter a valid email address.", "error")
+    return
+  }
+  if (!phone || phone.replace(/\D/g, "").length < 8) {
+    toast.open("Please enter a valid phone number.", "error")
+    return
+  }
+  if (!address || address.length < 8) {
+    toast.open("Please enter a complete delivery address.", "error")
+    return
+  }
+  if (!customer.payment) {
+    toast.open("Please select a payment method.", "error")
+    return
+  }
 
-        return
+  addOrder({
+    id: Date.now(),
+    customer: {
+      name,
+      email,
+      phone,
+      address,
+      payment: customer.payment,
+    },
+    items: [...cart.items],
+    total: total.value,
+    date: new Date().toLocaleString(),
+  })
 
-    }
-
-    addOrder({
-
-        id: Date.now(),
-
-        customer: { ...customer },
-
-        items: [...cart.items],
-
-        total: total.value,
-
-        date: new Date().toLocaleString()
-
-    })
-
-    toast.open("Order placed successfully!", "success")
-
-    cart.items = []
-
-    localStorage.removeItem("cart")
-
-    router.push("/profile")
-
+  toast.open("Order placed successfully!", "success")
+  cart.items = []
+  localStorage.removeItem("cart")
+  router.push("/orders")
 }
 </script>
 

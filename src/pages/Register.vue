@@ -125,13 +125,11 @@ Login
 <script setup>
 import { ref } from "vue"
 import { useRouter } from "vue-router"
-
 import GoogleLogin from "../components/GoogleLogin.vue"
 import MainLayout from "../layouts/MainLayout.vue"
 import { toast } from "../stores/toast"
 import { onMounted } from "vue"
-import { auth } from "../stores/auth"
-
+import { auth, ADMIN_EMAIL } from "../stores/auth"
 
 const router = useRouter()
 
@@ -139,93 +137,88 @@ const name = ref("")
 const email = ref("")
 const password = ref("")
 const confirmPassword = ref("")
+const errors = ref({})
 
 onMounted(() => {
-
-    if(auth.isLoggedIn){
-
-        router.push("/profile")
-
-    }
-
+  if (auth.isLoggedIn) {
+    router.push(auth.isAdmin ? "/admin" : "/profile")
+  }
 })
 
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+}
 
-function registerUser(){
+function validate() {
+  const e = {}
+  const n = name.value.trim()
+  const em = email.value.trim().toLowerCase()
+  const pw = password.value
+  const cpw = confirmPassword.value
 
-    if(name.value.trim().length < 3){
+  if (n.length < 2) {
+    e.name = "Name must be at least 2 characters."
+  } else if (n.length > 50) {
+    e.name = "Name is too long."
+  }
 
-        toast.open("Name must be at least 3 characters.","error")
-        return
+  if (!em) {
+    e.email = "Email is required."
+  } else if (!isValidEmail(em)) {
+    e.email = "Please enter a valid email address."
+  } else if (auth.isReservedAdminEmail(em)) {
+    e.email = "This email is reserved for the store owner. Please use a different email."
+  }
 
-    }
+  if (!pw) {
+    e.password = "Password is required."
+  } else if (pw.length < 6) {
+    e.password = "Password must be at least 6 characters."
+  } else if (pw.length > 64) {
+    e.password = "Password is too long."
+  }
 
-    if(password.value !== confirmPassword.value){
+  if (!cpw) {
+    e.confirmPassword = "Please confirm your password."
+  } else if (pw !== cpw) {
+    e.confirmPassword = "Passwords do not match."
+  }
 
-        toast.open("Passwords do not match.","error")
-        return
+  errors.value = e
+  return Object.keys(e).length === 0
+}
 
-    }
+function registerUser() {
+  if (!validate()) {
+    const first = Object.values(errors.value)[0]
+    toast.open(first, "error")
+    return
+  }
 
-    if(password.value.length < 6){
+  const users = JSON.parse(localStorage.getItem("users") || "[]")
+  const em = email.value.trim().toLowerCase()
+  const n = name.value.trim()
 
-        toast.open("Password must be at least 6 characters.","error")
-        return
+  if (users.some((u) => (u.email || "").toLowerCase() === em)) {
+    errors.value = { email: "Email already registered." }
+    toast.open("Email already registered. Please login instead.", "error")
+    return
+  }
 
-    }
+  const newUser = {
+    id: Date.now(),
+    name: n,
+    email: em,
+    password: password.value,
+    provider: "local",
+    role: "user",
+  }
 
-    const users =
-        JSON.parse(localStorage.getItem("users")) || []
+  users.push(newUser)
+  localStorage.setItem("users", JSON.stringify(users))
 
-    const emailExists = users.some(
-        user =>
-            user.email.toLowerCase() === email.value.toLowerCase()
-    )
-
-    if(emailExists){
-
-        toast.open("Email already registered.","error")
-        return
-
-    }
-
-    const usernameExists = users.some(
-        user =>
-            user.name.toLowerCase() === name.value.toLowerCase()
-    )
-
-    if(usernameExists){
-
-        toast.open("Username already taken.","error")
-        return
-
-    }
-
-    const newUser={
-
-        id:Date.now(),
-
-        name:name.value,
-
-        email:email.value,
-
-        password:password.value,
-
-        provider:"local"
-
-    }
-
-    users.push(newUser)
-
-    localStorage.setItem(
-        "users",
-        JSON.stringify(users)
-    )
-
-    toast.open("Account created successfully!")
-
-    router.push("/login")
-
+  toast.open("Account created successfully! Please login.")
+  router.push("/login")
 }
 </script>
 

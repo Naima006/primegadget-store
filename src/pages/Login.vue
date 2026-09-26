@@ -114,7 +114,6 @@ Create one
 </template>
 
 <script setup>
-
 import { ref } from "vue"
 import { useRouter } from "vue-router"
 import GoogleLogin from "../components/GoogleLogin.vue"
@@ -126,8 +125,8 @@ import { auth } from "../stores/auth"
 const router = useRouter()
 
 const email = ref("")
-
 const password = ref("")
+const loading = ref(false)
 
 onMounted(() => {
   if (auth.isLoggedIn) {
@@ -135,10 +134,32 @@ onMounted(() => {
   }
 })
 
-function login() {
-  const success = auth.userLogin(email.value.trim(), password.value)
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((value || "").trim())
+}
 
-  if (!success) {
+function login() {
+  const em = email.value.trim()
+  const pw = password.value
+
+  if (!em) {
+    toast.open("Please enter your email.", "error")
+    return
+  }
+  if (!isValidEmail(em)) {
+    toast.open("Please enter a valid email address.", "error")
+    return
+  }
+  if (!pw) {
+    toast.open("Please enter your password.", "error")
+    return
+  }
+
+  loading.value = true
+  const result = auth.userLogin(em, pw)
+  loading.value = false
+
+  if (!result.success) {
     toast.open("Invalid email or password.", "error")
     return
   }
@@ -146,13 +167,12 @@ function login() {
   const name = auth.currentUser?.name || "User"
   toast.open("Welcome back, " + name + "!")
 
-  if (auth.isAdmin) {
+  if (result.isAdmin) {
     router.push("/admin")
   } else {
     router.push("/profile")
   }
 }
-
 </script>
 
 <style scoped>
