@@ -17,6 +17,13 @@
 
     <h3>{{ product.name }}</h3>
 
+    <p v-if="inStock" class="stock-label">
+      <i class="bi bi-check-circle-fill"></i> {{ stockLeft }} in stock
+    </p>
+    <p v-else class="stock-label out">
+      <i class="bi bi-x-circle-fill"></i> Out of stock
+    </p>
+
     <!-- Star rating (demo / static with slight variation by id) -->
     <div class="rating" aria-label="Product rating">
       <i
@@ -36,12 +43,12 @@
         <button @click.stop="increase" aria-label="Increase quantity">+</button>
       </div>
 
-      <button class="cart-btn" @click.stop="handleAdd">
-        Add to Cart
+      <button class="cart-btn" :disabled="!inStock" @click.stop="handleAdd">
+        {{ inStock ? 'Add to Cart' : 'Sold Out' }}
       </button>
     </div>
 
-    <button class="buy-btn" @click.stop="handleBuyNow">
+    <button class="buy-btn" :disabled="!inStock" @click.stop="handleBuyNow">
       Buy Now
     </button>
 
@@ -56,6 +63,7 @@ import { ref, computed } from "vue"
 import { useRouter } from "vue-router"
 import { addToCart } from "../stores/cart"
 import { favorites } from "../stores/favorites"
+import { toast } from "../stores/toast"
 
 const props = defineProps({
   product: {
@@ -70,9 +78,15 @@ const added = ref(false)
 
 const isFav = computed(() => favorites.isFavorite(props.product.id))
 
-// Deterministic demo rating based on product id (looks real, no backend needed)
+const stockLeft = computed(() => {
+  const s = props.product.stock
+  return typeof s === "number" ? s : 50
+})
+
+const inStock = computed(() => stockLeft.value > 0)
+
 const stars = computed(() => {
-  const base = 3 + (props.product.id % 3) // 3, 4 or 5
+  const base = 3 + (props.product.id % 3)
   return base
 })
 
@@ -85,7 +99,7 @@ function toggleFav() {
 }
 
 function increase() {
-  if (quantity.value < 99) quantity.value++
+  if (quantity.value < Math.min(99, stockLeft.value)) quantity.value++
 }
 
 function decrease() {
@@ -93,6 +107,14 @@ function decrease() {
 }
 
 function handleAdd() {
+  if (!inStock.value) {
+    toast.open("This item is out of stock.", "error")
+    return
+  }
+  if (quantity.value > stockLeft.value) {
+    toast.open(`Only ${stockLeft.value} left in stock.`, "error")
+    return
+  }
   for (let i = 0; i < quantity.value; i++) {
     addToCart(props.product)
   }
@@ -103,13 +125,12 @@ function handleAdd() {
 }
 
 function handleBuyNow() {
-  // Ensure at least one is in cart then go to checkout
-  const existing = JSON.parse(localStorage.getItem("cart") || "[]")
-  const found = existing.find((i) => i.id === props.product.id)
-  if (!found) {
-    for (let i = 0; i < quantity.value; i++) {
-      addToCart(props.product)
-    }
+  if (!inStock.value) {
+    toast.open("This item is out of stock.", "error")
+    return
+  }
+  for (let i = 0; i < quantity.value; i++) {
+    addToCart(props.product)
   }
   router.push("/checkout")
 }
@@ -228,7 +249,28 @@ h3 {
   font-size: 22px;
   font-weight: 800;
   color: #111;
-  margin-bottom: 14px;
+  margin-bottom: 6px;
+}
+
+.stock-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1a9b3d;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.stock-label.out {
+  color: #d32f2f;
+}
+
+.cart-btn:disabled,
+.buy-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
 .actions {

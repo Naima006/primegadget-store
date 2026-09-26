@@ -27,10 +27,23 @@
           </span>
         </RouterLink>
 
-        <RouterLink class="login-btn" :to="auth.isAdmin ? '/admin' : '/profile'">
+        <RouterLink
+          class="login-btn"
+          :to="auth.isLoggedIn ? (auth.isAdmin ? '/admin' : '/profile') : '/login'"
+        >
           <i class="bi bi-person-circle"></i>
-          <span>{{ auth.isAdmin ? 'Admin' : 'Profile' }}</span>
+          <span>{{ auth.isLoggedIn ? (auth.isAdmin ? 'Admin' : 'Profile') : 'Login' }}</span>
         </RouterLink>
+
+        <button
+          v-if="auth.isLoggedIn"
+          class="logout-nav"
+          @click="handleLogout"
+          title="Logout"
+        >
+          <i class="bi bi-box-arrow-right"></i>
+          <span class="logout-text">Logout</span>
+        </button>
       </div>
     </div>
 
@@ -41,9 +54,12 @@
 
 <script setup>
 import { ref } from "vue"
+import { useRouter } from "vue-router"
 import { cart } from "../stores/cart"
 import { auth } from "../stores/auth"
+import { toast } from "../stores/toast"
 
+const router = useRouter()
 const mobileMenu = ref(false)
 
 function toggleMenu() {
@@ -52,6 +68,13 @@ function toggleMenu() {
 
 function closeMenu() {
   mobileMenu.value = false
+}
+
+function handleLogout() {
+  auth.logout()
+  toast.open("Logged out successfully")
+  closeMenu()
+  router.push("/")
 }
 </script>
 
@@ -323,4 +346,32 @@ font-size:20px;
 
 }
 
+
+.logout-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 80, 80, 0.12);
+  color: #ff6b6b;
+  padding: 10px 16px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.logout-nav:hover {
+  background: rgba(255, 80, 80, 0.22);
+}
+
+@media (max-width: 768px) {
+  .logout-text {
+    display: none;
+  }
+  .logout-nav {
+    padding: 10px 12px;
+  }
+}
 </style>

@@ -148,6 +148,7 @@ import MainLayout from "../layouts/MainLayout.vue"
 import { cart, clearCart } from "../stores/cart"
 
 import { addOrder } from "../stores/orders"
+import { products } from "../stores/products"
 
 import { toast } from "../stores/toast"
 
@@ -213,6 +214,24 @@ function placeOrder() {
   if (!customer.payment) {
     toast.open("Please select a payment method.", "error")
     return
+  }
+
+  // Stock validation
+  for (const item of cart.items) {
+    const p = products.getProduct(item.id)
+    const available = typeof p?.stock === "number" ? p.stock : 50
+    if (!p || available < item.quantity) {
+      toast.open(
+        `"${item.name}" only has ${available} left in stock.`,
+        "error"
+      )
+      return
+    }
+  }
+
+  // Decrease stock
+  for (const item of cart.items) {
+    products.decreaseStock(item.id, item.quantity)
   }
 
   addOrder({

@@ -33,6 +33,7 @@
               <th>Product</th>
               <th>Category</th>
               <th>Price</th>
+              <th>Stock</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -50,6 +51,11 @@
               <td><span class="cat-badge">{{ p.category }}</span></td>
               <td class="price">${{ p.price }}</td>
               <td>
+                <span class="stock-badge" :class="{ low: (p.stock ?? 50) <= 5, out: (p.stock ?? 50) <= 0 }">
+                  {{ p.stock ?? 50 }}
+                </span>
+              </td>
+              <td>
                 <div class="row-actions">
                   <button class="icon-btn edit" @click="openModal(p)" title="Edit">
                     <i class="bi bi-pencil"></i>
@@ -61,7 +67,7 @@
               </td>
             </tr>
             <tr v-if="!filtered.length">
-              <td colspan="4" class="empty">No products found.</td>
+              <td colspan="5" class="empty">No products found.</td>
             </tr>
           </tbody>
         </table>
@@ -130,6 +136,19 @@
             </div>
 
             <div class="form-group">
+              <label>Stock Quantity *</label>
+              <input
+                v-model.number="form.stock"
+                type="number"
+                min="0"
+                step="1"
+                required
+                placeholder="e.g. 25"
+              />
+              <p class="field-hint">Number of units available. Set to 0 for out of stock.</p>
+            </div>
+
+            <div class="form-group">
               <label>Product Image *</label>
               <ImageUpload v-model="form.image" />
             </div>
@@ -173,6 +192,7 @@ const form = ref({
   name: "",
   category: "",
   price: "",
+  stock: 50,
   image: "",
   description: "",
 })
@@ -202,6 +222,7 @@ function openModal(product = null) {
       name: product.name,
       category: product.category,
       price: product.price,
+      stock: typeof product.stock === "number" ? product.stock : 50,
       image: product.image,
       description: product.description || "",
     }
@@ -211,6 +232,7 @@ function openModal(product = null) {
       name: "",
       category: products.categories[0]?.name || "",
       price: "",
+      stock: 50,
       image: "",
       description: "",
     }
@@ -226,6 +248,10 @@ function closeModal() {
 function saveProduct() {
   if (!form.value.image) {
     toast.open("Please upload a product image.", "error")
+    return
+  }
+  if (form.value.stock === "" || form.value.stock === null || form.value.stock < 0) {
+    toast.open("Please enter a valid stock quantity (0 or more).", "error")
     return
   }
   if (editing.value) {
@@ -661,5 +687,28 @@ tr:last-child td {
   .form-row {
     grid-template-columns: 1fr;
   }
+}
+
+.field-hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 6px;
+}
+.stock-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(74, 222, 128, 0.12);
+  color: #4ade80;
+}
+.stock-badge.low {
+  background: rgba(255, 180, 80, 0.15);
+  color: #ffb450;
+}
+.stock-badge.out {
+  background: rgba(255, 80, 80, 0.12);
+  color: #ff6b6b;
 }
 </style>

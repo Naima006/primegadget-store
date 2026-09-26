@@ -26,6 +26,8 @@
               </div>
 
               <p class="price">${{ product.price }}</p>
+              <p v-if="inStock" class="stock-ok">{{ stockLeft }} in stock</p>
+              <p v-else class="stock-out">Out of stock</p>
 
               <p class="desc">
                 {{
@@ -102,17 +104,36 @@ const isFav = computed(() =>
   props.product ? favorites.isFavorite(props.product.id) : false
 )
 
+const stockLeft = computed(() => {
+  if (!props.product) return 0
+  return typeof props.product.stock === "number" ? props.product.stock : 50
+})
+
+const inStock = computed(() => stockLeft.value > 0)
+
 function toggleFav() {
   if (!props.product) return
   favorites.toggle(props.product.id)
 }
 
 function add() {
+  if (!inStock.value) {
+    toast.open("Out of stock", "error")
+    return
+  }
+  if (qty.value > stockLeft.value) {
+    toast.open(`Only ${stockLeft.value} left.`, "error")
+    return
+  }
   for (let i = 0; i < qty.value; i++) addToCart(props.product)
   toast.open("Added to cart")
 }
 
 function buy() {
+  if (!inStock.value) {
+    toast.open("Out of stock", "error")
+    return
+  }
   for (let i = 0; i < qty.value; i++) addToCart(props.product)
   emit("close")
   router.push("/checkout")
@@ -377,5 +398,18 @@ h2 {
   .actions {
     flex-direction: column;
   }
+}
+
+.stock-ok {
+  font-size: 13px;
+  color: #1a9b3d;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.stock-out {
+  font-size: 13px;
+  color: #d32f2f;
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 </style>

@@ -4,7 +4,6 @@ import initialProducts from "../assets/data/products.json"
 const STORAGE_KEY = "primegadget_products"
 const CATEGORIES_KEY = "primegadget_categories"
 
-// Default categories derived from initial products + a few extras
 const defaultCategories = [
   { id: 1, name: "Headphones", icon: "bi-headphones" },
   { id: 2, name: "Earbuds", icon: "bi-earbuds" },
@@ -15,16 +14,24 @@ const defaultCategories = [
   { id: 7, name: "Consoles", icon: "bi-controller" },
 ]
 
+function withDefaults(list) {
+  return list.map((p) => ({
+    ...p,
+    stock: typeof p.stock === "number" ? p.stock : 50,
+    description: p.description || "",
+  }))
+}
+
 function loadProducts() {
   const saved = localStorage.getItem(STORAGE_KEY)
   if (saved) {
     try {
-      return JSON.parse(saved)
+      return withDefaults(JSON.parse(saved))
     } catch {
-      return [...initialProducts]
+      return withDefaults([...initialProducts])
     }
   }
-  return [...initialProducts]
+  return withDefaults([...initialProducts])
 }
 
 function loadCategories() {
@@ -51,12 +58,12 @@ export const products = reactive({
   items: loadProducts(),
   categories: loadCategories(),
 
-  // Products CRUD
   addProduct(product) {
     const newId = products.items.length
       ? Math.max(...products.items.map((p) => p.id)) + 1
       : 1
-    products.items.push({
+    // Newest first
+    products.items.unshift({
       id: newId,
       name: product.name,
       category: product.category,
@@ -64,6 +71,7 @@ export const products = reactive({
       image: product.image || "https://via.placeholder.com/400x300?text=Product",
       description: product.description || "",
       featured: !!product.featured,
+      stock: Math.max(0, Number(product.stock) || 0),
     })
     saveProducts()
     return newId
@@ -76,6 +84,10 @@ export const products = reactive({
       ...products.items[index],
       ...data,
       price: Number(data.price ?? products.items[index].price),
+      stock:
+        data.stock !== undefined
+          ? Math.max(0, Number(data.stock))
+          : products.items[index].stock,
     }
     saveProducts()
     return true
@@ -90,7 +102,16 @@ export const products = reactive({
     return products.items.find((p) => p.id === id)
   },
 
-  // Categories CRUD
+  /** Decrease stock after a successful order. Returns false if insufficient. */
+  decreaseStock(id, qty = 1) {
+    const p = products.items.find((x) => x.id === id)
+    if (!p) return false
+    if (p.stock < qty) return false
+    p.stock -= qty
+    saveProducts()
+    return true
+  },
+
   addCategory(cat) {
     const newId = products.categories.length
       ? Math.max(...products.categories.map((c) => c.id)) + 1
@@ -117,13 +138,12 @@ export const products = reactive({
     saveCategories()
   },
 
-  // Helpers
   getCategoryNames() {
     return products.categories.map((c) => c.name)
   },
 
   resetToDefaults() {
-    products.items = [...initialProducts]
+    products.items = withDefaults([...initialProducts])
     products.categories = [...defaultCategories]
     saveProducts()
     saveCategories()

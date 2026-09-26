@@ -1,280 +1,225 @@
 <template>
+  <MainLayout>
+    <section class="orders">
+      <div class="container">
+        <h1>My Orders</h1>
+        <p class="subtitle">Your recent purchases.</p>
 
-<MainLayout>
+        <div v-if="orders.items.length">
+          <div class="order-card" v-for="order in orders.items" :key="order.id">
+            <div class="top">
+              <h3>Order #{{ order.id }}</h3>
+              <span>{{ order.date }}</span>
+            </div>
 
-<section class="orders">
+            <div class="status-row">
+              <span
+                class="status"
+                :class="statusClass(order.status)"
+              >
+                {{ order.status || "Pending" }}
+              </span>
+            </div>
 
-<div class="container">
+            <!-- Tracking steps -->
+            <div v-if="order.tracking?.length" class="tracking">
+              <div
+                v-for="(step, i) in order.tracking"
+                :key="i"
+                class="track-step"
+                :class="{ done: step.completed }"
+              >
+                <span class="dot"></span>
+                <span class="label">{{ step.title }}</span>
+              </div>
+            </div>
 
-<h1>My Orders</h1>
+            <div class="product" v-for="item in order.items" :key="item.id">
+              {{ item.name }} × {{ item.quantity }}
+            </div>
 
-<p class="subtitle">
+            <div class="total">Total: ${{ order.total }}</div>
+          </div>
+        </div>
 
-Your recent purchases.
-
-</p>
-
-<div
-v-if="orders.items.length"
->
-
-<div
-class="order-card"
-v-for="order in orders.items"
-:key="order.id"
->
-
-<div class="top">
-
-<h3>
-
-Order #{{ order.id }}
-
-</h3>
-
-<span>
-
-{{ order.date }}
-
-</span>
-
-</div>
-
-<div class="status-row">
-
-    <span
-        class="status"
-        :class="(order.status || 'Pending').toLowerCase()"
-    >
-
-        {{ order.status || "Pending" }}
-
-    </span>
-
-</div>
-
-<div
-class="product"
-v-for="item in order.items"
-:key="item.id"
->
-
-{{ item.name }}
-
-× {{ item.quantity }}
-
-</div>
-
-<div class="total">
-
-Total: ${{ order.total }}
-
-</div>
-
-</div>
-
-</div>
-
-<div
-v-else
-class="empty"
->
-
-<i class="bi bi-box"></i>
-
-<h2>No Orders Yet</h2>
-
-<p>
-
-Your completed purchases will appear here.
-
-</p>
-
-<RouterLink
-to="/shop"
-class="shop-btn"
->
-
-Start Shopping
-
-</RouterLink>
-
-</div>
-
-</div>
-
-</section>
-
-</MainLayout>
-
+        <div v-else class="empty">
+          <i class="bi bi-box"></i>
+          <h2>No Orders Yet</h2>
+          <p>Your completed purchases will appear here.</p>
+          <RouterLink to="/shop" class="shop-btn">Start Shopping</RouterLink>
+        </div>
+      </div>
+    </section>
+  </MainLayout>
 </template>
 
 <script setup>
-
+import { onMounted } from "vue"
 import MainLayout from "../layouts/MainLayout.vue"
+import { orders, reloadOrders } from "../stores/orders"
 
-import { orders } from "../stores/orders"
+onMounted(() => {
+  // Always refresh from localStorage so admin status updates appear
+  reloadOrders()
+})
 
+function statusClass(s) {
+  return (s || "Pending").toLowerCase().replace(/\s+/g, "-")
+}
 </script>
 
 <style scoped>
-
-.orders{
-
-padding:140px 0;
-
-background:#f6f7f9;
-
-min-height:100vh;
-
+.orders {
+  padding: 140px 0;
+  background: #f6f7f9;
+  min-height: 100vh;
 }
 
-.subtitle{
-
-margin-bottom:35px;
-
-color:#777;
-
+.subtitle {
+  margin-bottom: 35px;
+  color: #777;
 }
 
-.order-card{
-
-background:white;
-
-padding:30px;
-
-border-radius:20px;
-
-margin-bottom:25px;
-
-box-shadow:0 8px 20px rgba(0,0,0,.06);
-
+.order-card {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 }
 
-.top{
-
-display:flex;
-
-justify-content:space-between;
-
-margin-bottom:20px;
-
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.product{
-
-padding:8px 0;
-
-color:#666;
-
+.top h3 {
+  font-size: 18px;
+  font-weight: 700;
 }
 
-.total{
-
-margin-top:20px;
-
-font-size:20px;
-
-font-weight:700;
-
+.top span {
+  color: #888;
+  font-size: 13px;
 }
 
-.empty{
-
-text-align:center;
-
-padding:80px 0;
-
+.status-row {
+  margin-bottom: 16px;
 }
 
-.empty i{
-
-font-size:70px;
-
-color:#bbb;
-
-margin-bottom:20px;
-
+.status {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #fff3cd;
+  color: #856404;
 }
 
-.shop-btn{
-
-display:inline-block;
-
-margin-top:25px;
-
-padding:14px 30px;
-
-background:var(--primary);
-
-border-radius:50px;
-
-font-weight:700;
-
-color:#000;
-
-text-decoration:none;
-
+.status.confirmed {
+  background: #cfe2ff;
+  color: #084298;
+}
+.status.packed {
+  background: #e2d5f1;
+  color: #5a2d82;
+}
+.status.shipped {
+  background: #cff4fc;
+  color: #055160;
+}
+.status.delivered {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+.status.cancelled {
+  background: #f8d7da;
+  color: #842029;
+}
+.status.pending {
+  background: #fff3cd;
+  color: #856404;
 }
 
-.status-row{
-
-margin-bottom:20px;
-
+.tracking {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+  padding: 12px 0;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.status{
-
-display:inline-block;
-
-padding:8px 18px;
-
-border-radius:50px;
-
-font-size:14px;
-
-font-weight:700;
-
+.track-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #bbb;
 }
 
-.pending{
-
-background:#FFF4CC;
-
-color:#B8860B;
-
+.track-step .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ddd;
 }
 
-.confirmed{
-
-background:#D6F5FF;
-
-color:#0077B6;
-
+.track-step.done {
+  color: #1a9b3d;
+  font-weight: 600;
 }
 
-.packed{
-
-background:#EFE2FF;
-
-color:#7B2CBF;
-
+.track-step.done .dot {
+  background: #1a9b3d;
 }
 
-.shipped{
-
-background:#FFE8CC;
-
-color:#E85D04;
-
+.product {
+  color: #555;
+  margin: 6px 0;
+  font-size: 14px;
 }
 
-.delivered{
-
-background:#D8F3DC;
-
-color:#2D6A4F;
-
+.total {
+  margin-top: 14px;
+  font-weight: 800;
+  font-size: 18px;
 }
 
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #888;
+}
+
+.empty i {
+  font-size: 48px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.shop-btn {
+  display: inline-block;
+  margin-top: 18px;
+  background: var(--primary);
+  color: #121212;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-weight: 700;
+}
+
+@media (max-width: 576px) {
+  .order-card {
+    padding: 20px;
+  }
+  .top h3 {
+    font-size: 16px;
+  }
+}
 </style>

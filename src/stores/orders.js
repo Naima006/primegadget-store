@@ -3,14 +3,14 @@ import { auth } from "./auth"
 
 const GLOBAL_KEY = "primegadget_all_orders"
 
-function userKey() {
-  const id = auth.currentUser?.email || auth.currentUser?.id || "guest"
+function userKey(emailOrId) {
+  const id = emailOrId || auth.currentUser?.email || auth.currentUser?.id || "guest"
   return `primegadget_orders_${id}`
 }
 
-function loadUserOrders() {
+function loadUserOrders(key) {
   try {
-    return JSON.parse(localStorage.getItem(userKey())) || []
+    return JSON.parse(localStorage.getItem(key || userKey())) || []
   } catch {
     return []
   }
@@ -24,8 +24,12 @@ function loadAllOrders() {
   }
 }
 
+function saveUserOrdersList(key, list) {
+  localStorage.setItem(key, JSON.stringify(list))
+}
+
 function saveUserOrders() {
-  localStorage.setItem(userKey(), JSON.stringify(orders.items))
+  saveUserOrdersList(userKey(), orders.items)
 }
 
 function saveAllOrders(list) {
@@ -50,7 +54,6 @@ export const orders = reactive({
   items: loadUserOrders().map(ensureTracking),
 })
 
-/** All orders (for admin) */
 export function getAllOrders() {
   return loadAllOrders().map(ensureTracking)
 }
@@ -74,13 +77,19 @@ export function addOrder(order) {
   orders.items.unshift(order)
   saveUserOrders()
 
-  // Also store in global list for admin
   const all = loadAllOrders()
   all.unshift(order)
   saveAllOrders(all)
 }
 
-const STATUS_STEPS = ["Pending", "Confirmed", "Packed", "Shipped", "Delivered", "Cancelled"]
+const STATUS_STEPS = [
+  "Pending",
+  "Confirmed",
+  "Packed",
+  "Shipped",
+  "Delivered",
+  "Cancelled",
+]
 
 export function updateOrderStatus(orderId, newStatus) {
   const all = loadAllOrders()
@@ -88,24 +97,37 @@ export function updateOrderStatus(orderId, newStatus) {
   if (idx === -1) return false
 
   all[idx].status = newStatus
-  // Sync tracking steps
   const stepIndex = STATUS_STEPS.indexOf(newStatus)
   if (stepIndex >= 0 && newStatus !== "Cancelled") {
-    all[idx].tracking = all[idx].tracking || []
     const titles = ["Order Placed", "Confirmed", "Packed", "Shipped", "Delivered"]
     all[idx].tracking = titles.map((title, i) => ({
       title,
       completed: i <= stepIndex,
     }))
+  } else if (newStatus === "Cancelled") {
+    // keep tracking as-is, just mark status
   }
   saveAllOrders(all)
 
-  // Update current user's list if it belongs to them
+  // Sync into the customer's own storage key (critical for multi-user)
+  const customerEmail = all[idx].userEmail || all[idx].customer?.email
+  if (customerEmail) {
+    const cKey = userKey(customerEmail)
+    const customerOrders = loadUserOrders(cKey)
+    const cIdx = customerOrders.findIndex((o) => o.id === orderId)
+    if (cIdx !== -1) {
+      customerOrders[cIdx] = { ...all[idx] }
+      saveUserOrdersList(cKey, customerOrders)
+    }
+  }
+
+  // Also update reactive list if current session owns this order
   const uIdx = orders.items.findIndex((o) => o.id === orderId)
   if (uIdx !== -1) {
     orders.items[uIdx] = { ...all[idx] }
     saveUserOrders()
   }
+
   return true
 }
 

@@ -5,8 +5,8 @@
 <ShopHero />
 
 <FeaturedProducts
-title="Featured Products"
-subtitle="Premium gadgets carefully selected for you."
+title=""
+subtitle=""
 />
 
 </MainLayout>
@@ -15,10 +15,10 @@ subtitle="Premium gadgets carefully selected for you."
 
 <script setup>
 
-import MainLayout from "../layouts/MainLayout.vue"
+import MainLayout from "../layouts/MainLayout.vue";
 
-import ShopHero from "../components/ShopHero.vue"
+import ShopHero from "../components/ShopHero.vue";
 
-import FeaturedProducts from "../components/FeaturedProducts.vue"
+import FeaturedProducts from "../components/FeaturedProducts.vue";
 
 </script>
