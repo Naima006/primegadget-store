@@ -1,16 +1,22 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router"
 
-import About from "../pages/About.vue";
-import Cart from "../pages/Cart.vue";
-import Checkout from "../pages/Checkout.vue";
-import Home from "../pages/Home.vue";
-import Login from "../pages/Login.vue";
-import Orders from "../pages/Orders.vue";
-import Profile from "../pages/Profile.vue";
-import Register from "../pages/Register.vue";
-import Shop from "../pages/Shop.vue";
-import NotFound from "../pages/NotFound.vue";
+import About from "../pages/About.vue"
+import Cart from "../pages/Cart.vue"
+import Checkout from "../pages/Checkout.vue"
+import Home from "../pages/Home.vue"
+import Login from "../pages/Login.vue"
+import Orders from "../pages/Orders.vue"
+import Profile from "../pages/Profile.vue"
+import Register from "../pages/Register.vue"
+import Shop from "../pages/Shop.vue"
+import NotFound from "../pages/NotFound.vue"
 
+import Dashboard from "../pages/admin/Dashboard.vue"
+import AdminProducts from "../pages/admin/Products.vue"
+import AdminCategories from "../pages/admin/Categories.vue"
+import HeroEditor from "../pages/admin/HeroEditor.vue"
+
+import { auth } from "../stores/auth"
 
 const routes = [
   {
@@ -26,7 +32,7 @@ const routes = [
   {
     path: "/about",
     name: "about",
-    component: About
+    component: About,
   },
   {
     path: "/cart",
@@ -36,12 +42,12 @@ const routes = [
   {
     path: "/checkout",
     name: "checkout",
-    component: Checkout
+    component: Checkout,
   },
   {
     path: "/orders",
     name: "orders",
-    component: Orders
+    component: Orders,
   },
   {
     path: "/login",
@@ -58,16 +64,55 @@ const routes = [
     name: "Profile",
     component: Profile,
   },
+  // Admin routes
   {
-  path: "/:pathMatch(.*)*",
-  name: "NotFound",
-  component: NotFound,
+    path: "/admin",
+    name: "AdminDashboard",
+    component: Dashboard,
+    meta: { requiresAdmin: true },
   },
-];
+  {
+    path: "/admin/products",
+    name: "AdminProducts",
+    component: AdminProducts,
+    meta: { requiresAdmin: true },
+  },
+  {
+    path: "/admin/categories",
+    name: "AdminCategories",
+    component: AdminCategories,
+    meta: { requiresAdmin: true },
+  },
+  {
+    path: "/admin/hero",
+    name: "AdminHero",
+    component: HeroEditor,
+    meta: { requiresAdmin: true },
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: NotFound,
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+  scrollBehavior() {
+    return { top: 0 }
+  },
+})
 
-export default router;
+// Navigation guard for admin
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAdmin) {
+    if (!auth.isLoggedIn || !auth.isAdmin) {
+      next({ path: "/login", query: { redirect: to.fullPath } })
+      return
+    }
+  }
+  next()
+})
+
+export default router

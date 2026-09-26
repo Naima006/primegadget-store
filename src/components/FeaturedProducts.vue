@@ -20,21 +20,14 @@
     >
 
     <select v-model="category">
-
-    <option>All</option>
-
-    <option>Headphones</option>
-
-    <option>Earbuds</option>
-
-    <option>Laptop</option>
-
-    <option>Phone</option>
-
-    <option>Watch</option>
-
-    <option>Accessories</option>
-
+      <option value="All">All</option>
+      <option
+        v-for="c in productsStore.categories"
+        :key="c.id"
+        :value="c.name"
+      >
+        {{ c.name }}
+      </option>
     </select>
 
 </div>
@@ -57,59 +50,44 @@ v-for="product in filteredProducts"
 </template>
 
 <script setup>
-
-import { ref, computed } from "vue"
-
+import { ref, computed, onMounted } from "vue"
+import { useRoute } from "vue-router"
 import ProductCard from "./ProductCard.vue"
-
-import products from "../assets/data/products.json"
-
-import { addToCart } from "../stores/cart";
-
+import { products as productsStore } from "../stores/products"
+import { addToCart } from "../stores/cart"
 
 const props = defineProps({
-
-title:{
-
-type:String,
-
-default:"Featured Products"
-
-},
-
-subtitle:{
-
-type:String,
-
-default:"Premium gadgets carefully selected for you."
-
-}
-
+  title: {
+    type: String,
+    default: "Featured Products",
+  },
+  subtitle: {
+    type: String,
+    default: "Premium gadgets carefully selected for you.",
+  },
 })
 
+const route = useRoute()
 const search = ref("")
-
 const category = ref("All")
 
+onMounted(() => {
+  if (route.query.category) {
+    category.value = route.query.category
+  }
+})
+
 const filteredProducts = computed(() => {
-
-return products.filter(product=>{
-
-const keyword = search.value.toLowerCase()
-
-const matchesSearch =
-  product.name.toLowerCase().includes(keyword) ||
-  product.category.toLowerCase().includes(keyword)
-  
-const matchesCategory=category.value==="All"||product.category===category.value
-
-return matchesSearch&&matchesCategory
-
+  return productsStore.items.filter((product) => {
+    const keyword = search.value.toLowerCase()
+    const matchesSearch =
+      product.name.toLowerCase().includes(keyword) ||
+      product.category.toLowerCase().includes(keyword)
+    const matchesCategory =
+      category.value === "All" || product.category === category.value
+    return matchesSearch && matchesCategory
+  })
 })
-
-})
-
-
 </script>
 
 <style scoped>

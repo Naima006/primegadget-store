@@ -40,9 +40,10 @@ alt="Headphones"
 <h2>Login</h2>
 
 <p>
-
-Sign in to your PrimeGadget account
-
+  Sign in to your PrimeGadget account
+</p>
+<p class="admin-hint">
+  Admin demo: <strong>admin@primegadget.com</strong> / <strong>admin123</strong>
 </p>
 
 <form @submit.prevent="login">
@@ -129,48 +130,27 @@ const email = ref("")
 const password = ref("")
 
 onMounted(() => {
-
-    if(auth.isLoggedIn){
-
-        router.push("/profile")
-
-    }
-
+  if (auth.isLoggedIn) {
+    router.push(auth.isAdmin ? "/admin" : "/profile")
+  }
 })
 
-function login(){
+function login() {
+  const success = auth.userLogin(email.value.trim(), password.value)
 
-    const users =
-        JSON.parse(localStorage.getItem("users")) || []
+  if (!success) {
+    toast.open("Invalid email or password.", "error")
+    return
+  }
 
-    const user = users.find(u =>
+  const name = auth.currentUser?.name || "User"
+  toast.open("Welcome back, " + name + "!")
 
-        u.email.toLowerCase() === email.value.toLowerCase()
-
-    )
-
-    if(!user){
-
-        toast.open("Account not found.","error")
-
-        return
-
-    }
-
-    if(user.password !== password.value){
-
-        toast.open("Incorrect password.","error")
-
-        return
-
-    }
-
-    auth.login(user)
-
-    toast.open("Welcome back, "+user.name+"!")
-
+  if (auth.isAdmin) {
+    router.push("/admin")
+  } else {
     router.push("/profile")
-
+  }
 }
 
 </script>
@@ -387,20 +367,28 @@ box-shadow:0 10px 25px rgba(152,255,0,.25);
 }
 
 .register{
+  display: block;
+  text-align: center;
+  margin-top: 25px;
+  color: var(--primary);
+  font-weight: 600;
+  transition: .3s;
+}
 
-display:block;
+.admin-hint {
+  font-size: 13px;
+  color: #9a9a9a;
+  background: rgba(198, 255, 74, 0.08);
+  border: 1px solid rgba(198, 255, 74, 0.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 12px 0 18px;
+  line-height: 1.45;
+}
 
-text-align:center;
-
-margin-top:25px;
-
-display: block;
-text-align: center;
-margin-top: 25px;
-color: var(--primary);
-font-weight: 600;
-transition: .3s;
-
+.admin-hint strong {
+  color: var(--primary);
+  font-weight: 600;
 }
 
 

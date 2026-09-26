@@ -1,71 +1,61 @@
 <template>
+  <section class="hero" :style="{ background: hero.config.backgroundColor || '#121212' }">
+    <div class="container hero-grid">
+      <div class="hero-left">
+        <span class="tag">
+          {{ hero.config.tag }}
+        </span>
 
-<section class="hero">
+        <h1>
+          <template v-for="(line, i) in titleLines" :key="i">
+            {{ line }}<br v-if="i < titleLines.length - 1" />
+          </template>
+        </h1>
 
-<div class="container hero-grid">
+        <p>
+          {{ hero.config.subtitle }}
+        </p>
 
-<div class="hero-left">
+        <div class="buttons">
+          <button class="primary" @click="go(hero.config.primaryBtnLink)">
+            {{ hero.config.primaryBtnText }}
+          </button>
 
-<span class="tag">
+          <button class="secondary" @click="go(hero.config.secondaryBtnLink)">
+            {{ hero.config.secondaryBtnText }}
+          </button>
+        </div>
+      </div>
 
-NEW ARRIVAL
-
-</span>
-
-<h1>
-
-IMMERSIVE SOUND
-
-FOR THE DIGITAL
-
-GENERATION
-
-</h1>
-
-<p>
-
-Experience premium wireless technology with elegant design and crystal-clear audio.
-
-</p>
-
-<div class="buttons">
-
-<button
-  class="primary"
-  @click="router.push('/shop')"
->
-  Shop Now
-</button>
-
-<button
-  class="secondary"
-  @click="router.push('/about')"
->
-  Explore
-</button>
-
-</div>
-
-</div>
-
-<div class="hero-right">
-
-<img
-src="../assets/images/hero-headphone.webp"
-alt="Headphone"
-/>
-
-</div>
-
-</div>
-
-</section>
-
+      <div class="hero-right">
+        <img
+          :src="hero.config.image"
+          alt="Hero product"
+        />
+      </div>
+    </div>
+  </section>
 </template>
+
 <script setup>
+import { computed } from "vue"
 import { useRouter } from "vue-router"
+import { hero } from "../stores/hero"
 
 const router = useRouter()
+
+const titleLines = computed(() => {
+  return (hero.config.title || "").split("\n").filter(Boolean)
+})
+
+function go(path) {
+  if (!path) return
+  if (path.startsWith("http")) {
+    window.open(path, "_blank")
+  } else {
+    router.push(path)
+  }
+}
 </script>
 
 <style scoped>
@@ -81,13 +71,13 @@ const router = useRouter()
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  gap: 40px; /* Added gap to prevent elements from touching */
+  gap: 40px;
 }
 
 .tag {
   display: inline-block;
   padding: 8px 18px;
-  background: rgba(255, 255, 255, .08);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 50px;
   margin-bottom: 25px;
 }
@@ -109,6 +99,7 @@ p {
 .buttons {
   display: flex;
   gap: 18px;
+  flex-wrap: wrap;
 }
 
 .primary,
@@ -125,7 +116,8 @@ p {
   padding: 15px 34px;
   border-radius: 50px;
   font-weight: 700;
-  border: none; /* Added to normalize button */
+  border: none;
+  color: #121212;
 }
 
 .secondary {
@@ -142,58 +134,66 @@ p {
 }
 
 .hero-right img {
-  width: 100%; /* Changed to make fluid */
-  max-width: 620px; /* Caps the width to your original design */
-  height: auto; /* Maintains aspect ratio */
-  transition: .4s;
+  width: 100%;
+  max-width: 620px;
+  height: auto;
+  transition: 0.4s;
 }
 
 .hero-right img:hover {
   transform: scale(1.05);
 }
 
-/* --- Responsive Media Queries --- */
-
-/* Tablet & Smaller Desktop */
+/* Responsive */
 @media (max-width: 992px) {
   .hero-grid {
-    grid-template-columns: 1fr; /* Stacks the content and image */
-    text-align: center; /* Centers text for a better mobile look */
+    grid-template-columns: 1fr;
+    text-align: center;
     gap: 60px;
   }
 
   h1 {
-    font-size: 56px; /* Scales down the massive headline */
+    font-size: 56px;
   }
 
   p {
-    margin: 0 auto 35px; /* Centers the paragraph natively */
+    margin: 0 auto 35px;
   }
 
   .buttons {
-    justify-content: center; /* Centers the buttons */
+    justify-content: center;
   }
 }
 
-/* Mobile Devices */
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   .hero {
-    padding-top: 110px;
-    padding-bottom: 50px;
+    padding-top: 120px;
+    padding-bottom: 60px;
   }
 
   h1 {
-    font-size: 42px; /* Scales down further for small screens */
+    font-size: 42px;
   }
 
-  .buttons {
-    flex-direction: column; /* Stacks buttons on narrow screens */
-    width: 100%;
+  p {
+    font-size: 16px;
   }
 
-  .primary, 
+  .primary,
   .secondary {
-    width: 100%; /* Makes buttons full-width on mobile */
+    padding: 13px 26px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 32px;
+  }
+
+  .tag {
+    font-size: 13px;
+    padding: 6px 14px;
   }
 }
 </style>

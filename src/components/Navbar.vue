@@ -14,10 +14,12 @@
         <RouterLink to="/" @click="closeMenu">Home</RouterLink>
         <RouterLink to="/shop" @click="closeMenu">Shop</RouterLink>
         <RouterLink to="/about" @click="closeMenu">About</RouterLink>
+        <RouterLink v-if="auth.isAdmin" to="/admin" @click="closeMenu" class="admin-link">
+          Admin
+        </RouterLink>
       </nav>
 
       <div class="actions">
-        
         <RouterLink class="icon-btn cart" to="/cart">
           <i class="bi bi-cart3"></i>
           <span v-if="cart.items.length" class="badge">
@@ -25,12 +27,11 @@
           </span>
         </RouterLink>
 
-        <RouterLink class="login-btn" to="/profile">
+        <RouterLink class="login-btn" :to="auth.isAdmin ? '/admin' : '/profile'">
           <i class="bi bi-person-circle"></i>
-          <span>Profile</span>
+          <span>{{ auth.isAdmin ? 'Admin' : 'Profile' }}</span>
         </RouterLink>
-
-        </div>
+      </div>
     </div>
 
     <div v-if="mobileMenu" class="overlay" @click="toggleMenu"></div>
@@ -39,25 +40,19 @@
 </template>
 
 <script setup>
-
 import { ref } from "vue"
 import { cart } from "../stores/cart"
-
+import { auth } from "../stores/auth"
 
 const mobileMenu = ref(false)
 
-function toggleMenu(){
-
-    mobileMenu.value = !mobileMenu.value
-
+function toggleMenu() {
+  mobileMenu.value = !mobileMenu.value
 }
 
-function closeMenu(){
-
-    mobileMenu.value = false
-
+function closeMenu() {
+  mobileMenu.value = false
 }
-
 </script>
 
 <style scoped>
