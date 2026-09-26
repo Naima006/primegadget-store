@@ -4,7 +4,7 @@
       <header class="page-header">
         <div>
           <h1>Hero Section</h1>
-          <p>Edit the homepage hero and preview changes live. Perfect for featuring new arrivals.</p>
+          
         </div>
         <div class="header-actions">
           <button class="btn-ghost" @click="resetHero">
@@ -68,9 +68,17 @@
             </div>
             <div class="form-group">
               <label>Secondary Button Link</label>
-              <input v-model="local.secondaryBtnLink" placeholder="/about" />
+              <input v-model="local.secondaryBtnLink" placeholder="/#featured" />
             </div>
           </div>
+
+          <p class="link-hint">
+            <strong>Link examples:</strong>
+            <code>/shop</code> ·
+            <code>/#featured</code> (scroll to Featured Products) ·
+            <code>/#categories</code> (scroll to Categories) ·
+            <code>/about</code>
+          </p>
         </div>
 
         <!-- Live Preview -->
@@ -121,9 +129,9 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue"
-import AdminLayout from "../../layouts/AdminLayout.vue"
+import { computed, ref, watch } from "vue"
 import ImageUpload from "../../components/ImageUpload.vue"
+import AdminLayout from "../../layouts/AdminLayout.vue"
 import { hero } from "../../stores/hero"
 import { toast } from "../../stores/toast"
 
@@ -503,5 +511,19 @@ watch(
   .preview-title {
     font-size: 22px;
   }
+}
+
+.link-hint {
+  font-size: 12px;
+  color: #888;
+  margin-top: 8px;
+  line-height: 1.6;
+}
+.link-hint code {
+  background: #0f1115;
+  padding: 2px 7px;
+  border-radius: 6px;
+  color: var(--primary);
+  font-size: 11px;
 }
 </style>

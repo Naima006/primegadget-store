@@ -1,5 +1,5 @@
 <template>
-  <section class="categories">
+  <section id="categories" class="categories">
     <div class="container">
       <div class="section-header">
         <h2>Shop by Category</h2>
@@ -36,6 +36,7 @@ function goToShop(category) {
 .categories {
   padding: 50px 0;
   background: #f7f8fa;
+  scroll-margin-top: 100px;
 }
 
 .section-header {

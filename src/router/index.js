@@ -106,7 +106,19 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior() {
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({
+            el: to.hash,
+            behavior: "smooth",
+            top: 90, // offset for fixed navbar
+          })
+        }, 120)
+      })
+    }
+    if (savedPosition) return savedPosition
     return { top: 0 }
   },
 })

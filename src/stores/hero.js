@@ -17,7 +17,7 @@ const defaultHero = {
   primaryBtnText: "Shop Now",
   primaryBtnLink: "/shop",
   secondaryBtnText: "Explore",
-  secondaryBtnLink: "/about",
+  secondaryBtnLink: "/#featured",
   backgroundColor: "#121212",
 }
 

@@ -38,23 +38,75 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
-import { useRouter } from "vue-router"
+import { computed, nextTick } from "vue"
+import { useRouter, useRoute } from "vue-router"
 import { hero } from "../stores/hero"
 
 const router = useRouter()
+const route = useRoute()
 
 const titleLines = computed(() => {
   return (hero.config.title || "").split("\n").filter(Boolean)
 })
 
-function go(path) {
-  if (!path) return
-  if (path.startsWith("http")) {
-    window.open(path, "_blank")
-  } else {
-    router.push(path)
+/**
+ * Supports:
+ * - /shop, /about          → normal route
+ * - #featured              → scroll to section on current page
+ * - /#featured             → go home then scroll to #featured
+ * - /#categories           → go home then scroll to #categories
+ * - https://...            → external
+ */
+function scrollToId(id) {
+  const el = document.getElementById(id)
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "start" })
+    return true
   }
+  return false
+}
+
+async function go(path) {
+  if (!path) return
+  const raw = String(path).trim()
+
+  // External
+  if (raw.startsWith("http://") || raw.startsWith("https://")) {
+    window.open(raw, "_blank")
+    return
+  }
+
+  // Hash only: #featured
+  if (raw.startsWith("#")) {
+    const id = raw.slice(1)
+    if (!scrollToId(id)) {
+      // Not on a page that has this section — go home with hash
+      await router.push({ path: "/", hash: raw })
+      await nextTick()
+      setTimeout(() => scrollToId(id), 80)
+    }
+    return
+  }
+
+  // Path with hash: /#featured or /shop#something
+  if (raw.includes("#")) {
+    const [pathname, hash] = raw.split("#")
+    const targetPath = pathname || "/"
+    const hashId = hash
+
+    if (route.path === targetPath || (targetPath === "/" && route.path === "/")) {
+      scrollToId(hashId)
+    } else {
+      await router.push({ path: targetPath || "/", hash: "#" + hashId })
+      await nextTick()
+      // Wait for page render
+      setTimeout(() => scrollToId(hashId), 100)
+    }
+    return
+  }
+
+  // Normal internal path
+  router.push(raw.startsWith("/") ? raw : "/" + raw)
 }
 </script>
 
@@ -144,7 +196,6 @@ p {
   transform: scale(1.05);
 }
 
-/* Responsive */
 @media (max-width: 992px) {
   .hero-grid {
     grid-template-columns: 1fr;
