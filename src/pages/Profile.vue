@@ -104,6 +104,14 @@
 
     <div class="summary-card">
 
+        <h2>Wishlist</h2>
+
+        <span>{{ favorites.ids.length }}</span>
+
+    </div>
+
+    <div class="summary-card">
+
         <h2>Account</h2>
 
         <span>
@@ -143,7 +151,11 @@ Track all your placed orders.
 
 <!-- Wishlist -->
 
-<div class="dashboard-card disabled">
+<RouterLink
+v-if="auth.isLoggedIn"
+to="/wishlist"
+class="dashboard-card"
+>
 
 <div class="icon">
 
@@ -155,15 +167,19 @@ Track all your placed orders.
 
 <p>
 
-Coming Soon
+{{ favorites.ids.length }} saved item{{ favorites.ids.length === 1 ? '' : 's' }}.
 
 </p>
 
-</div>
+</RouterLink>
 
 <!-- Settings -->
 
-<div class="dashboard-card disabled">
+<RouterLink
+v-if="auth.isLoggedIn"
+to="/settings"
+class="dashboard-card"
+>
 
 <div class="icon">
 
@@ -175,15 +191,18 @@ Coming Soon
 
 <p>
 
-Coming Soon
+Account details &amp; preferences.
 
 </p>
 
-</div>
+</RouterLink>
 
 <!-- About -->
 
-<div class="dashboard-card disabled">
+<RouterLink
+to="/about"
+class="dashboard-card"
+>
 
 <div class="icon">
 
@@ -199,7 +218,7 @@ Version 1.0
 
 </p>
 
-</div>
+</RouterLink>
 
 </div>
 
@@ -214,19 +233,22 @@ Version 1.0
 <script setup>
 import MainLayout from "../layouts/MainLayout.vue"
 
+import { onMounted } from "vue"
 import { auth } from "../stores/auth"
 import { cart } from "../stores/cart"
 import { orders } from "../stores/orders"
+import { favorites, reloadFavorites } from "../stores/favorites"
 import { useRouter } from "vue-router"
 
 const router = useRouter()
 
+onMounted(() => {
+  reloadFavorites()
+})
+
 function logout(){
-
     auth.logout()
-
     router.push("/login")
-
 }
 </script>
 

@@ -7,6 +7,8 @@ import Home from "../pages/Home.vue"
 import Login from "../pages/Login.vue"
 import Orders from "../pages/Orders.vue"
 import Profile from "../pages/Profile.vue"
+import Wishlist from "../pages/Wishlist.vue"
+import Settings from "../pages/Settings.vue"
 import Register from "../pages/Register.vue"
 import Shop from "../pages/Shop.vue"
 import NotFound from "../pages/NotFound.vue"
@@ -64,6 +66,16 @@ const routes = [
     path: "/profile",
     name: "Profile",
     component: Profile,
+  },
+  {
+    path: "/wishlist",
+    name: "Wishlist",
+    component: Wishlist,
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: Settings,
   },
   // Admin routes
   {
