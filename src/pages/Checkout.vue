@@ -124,14 +124,26 @@ ${{ item.price * item.quantity }}
 
 </div>
 
-<hr>
+<hr class="sum-hr" />
+
+<div class="summary-breakdown">
+  <div class="row">
+    <span>Subtotal</span>
+    <span>${{ subtotal }}</span>
+  </div>
+  <div class="row">
+    <span>Shipping</span>
+    <span>{{ shippingLabel }}</span>
+  </div>
+  <div class="row">
+    <span>Tax (5%)</span>
+    <span>${{ tax }}</span>
+  </div>
+</div>
 
 <div class="total">
-
-<span>Total</span>
-
-<span>${{ total }}</span>
-
+  <span>Total</span>
+  <span>${{ total }}</span>
 </div>
 
 </div>
@@ -161,6 +173,7 @@ import { products } from "../stores/products"
 
 import { toast } from "../stores/toast"
 import { getEstimatedDelivery, DEFAULT_BUSINESS_DAYS } from "../utils/delivery"
+import { computeOrderTotals } from "../utils/pricing"
 
 const router = useRouter()
 
@@ -178,17 +191,11 @@ payment:"Cash on Delivery"
 
 })
 
-const total = computed(()=>{
-
-return cart.items.reduce(
-
-(sum,item)=>
-
-sum + item.price*item.quantity
-
-,0)
-
-})
+const totals = computed(() => computeOrderTotals(cart.items))
+const subtotal = computed(() => totals.value.subtotal)
+const tax = computed(() => totals.value.tax)
+const shippingLabel = computed(() => totals.value.shippingLabel)
+const total = computed(() => totals.value.total)
 
 const deliveryInfo = computed(() => getEstimatedDelivery(new Date(), DEFAULT_BUSINESS_DAYS))
 
@@ -258,6 +265,10 @@ function placeOrder() {
       payment: customer.payment,
     },
     items: [...cart.items],
+    subtotal: subtotal.value,
+    tax: tax.value,
+    shipping: totals.value.shipping,
+    shippingLabel: shippingLabel.value,
     total: total.value,
     date: new Date().toLocaleString(),
     estimatedDelivery: eta.label,
@@ -423,6 +434,21 @@ position:static;
 }
 
 
+.summary-breakdown {
+  margin-bottom: 12px;
+}
+.summary-breakdown .row {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+  font-size: 14px;
+  color: #555;
+}
+.sum-hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 16px 0;
+}
 .delivery-estimate {
   display: flex;
   gap: 14px;

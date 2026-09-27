@@ -55,6 +55,14 @@
             </div>
           </div>
 
+          <div v-if="order.subtotal != null" class="price-breakdown">
+            <span>Subtotal ${{ order.subtotal }}</span>
+            <span>·</span>
+            <span>Shipping {{ order.shippingLabel || 'Free' }}</span>
+            <span>·</span>
+            <span>Tax ${{ order.tax ?? 0 }}</span>
+          </div>
+
           <div class="order-items">
             <div v-for="item in order.items" :key="item.id" class="item-row">
               <img :src="item.image" :alt="item.name" />
@@ -403,5 +411,16 @@ function onStatusChange(id, status) {
 }
 .eta-admin strong {
   color: #e8e8e8;
+}
+
+.price-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  font-size: 12px;
+  color: #888;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #1e2128;
 }
 </style>

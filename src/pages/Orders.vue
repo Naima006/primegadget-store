@@ -59,7 +59,13 @@
               <span>Delivered</span>
             </div>
 
-            <div class="total">Total: ${{ order.total }}</div>
+            <div v-if="order.subtotal != null" class="order-totals">
+              <div class="ot-row"><span>Subtotal</span><span>${{ order.subtotal }}</span></div>
+              <div class="ot-row"><span>Shipping</span><span>{{ order.shippingLabel || (order.shipping ? '$' + order.shipping : 'Free') }}</span></div>
+              <div class="ot-row"><span>Tax</span><span>${{ order.tax ?? 0 }}</span></div>
+              <div class="ot-row total"><span>Total</span><span>${{ order.total }}</span></div>
+            </div>
+            <div v-else class="total">Total: ${{ order.total }}</div>
           </div>
         </div>
 
@@ -211,6 +217,25 @@ function statusClass(s) {
   margin-top: 14px;
   font-weight: 800;
   font-size: 18px;
+}
+
+.order-totals {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+.ot-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #555;
+  margin: 4px 0;
+}
+.ot-row.total {
+  font-weight: 800;
+  font-size: 17px;
+  color: #111;
+  margin-top: 8px;
 }
 
 .eta {

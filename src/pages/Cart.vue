@@ -193,30 +193,12 @@ decreaseQuantity
 }
 
 from "../stores/cart"
+import { computeOrderTotals } from "../utils/pricing"
 
-const subtotal = computed(() =>
-
-cart.items.reduce(
-
-(sum,item)=>
-
-sum + item.price * item.quantity
-
-,0)
-
-)
-
-const tax = computed(()=>
-
-Math.round(subtotal.value*0.05)
-
-)
-
-const total = computed(()=>
-
-subtotal.value+tax.value
-
-)
+const totals = computed(() => computeOrderTotals(cart.items))
+const subtotal = computed(() => totals.value.subtotal)
+const tax = computed(() => totals.value.tax)
+const total = computed(() => totals.value.total)
 
 </script>
 
