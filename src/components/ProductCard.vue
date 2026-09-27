@@ -1,5 +1,5 @@
 <template>
-  <div class="product-card" @click="$emit('open', product)" role="button" tabindex="0" @keyup.enter="$emit('open', product)">
+  <div class="product-card anim-fade-up" @click="$emit('open', product)" role="button" tabindex="0" @keyup.enter="$emit('open', product)">
     <!-- Favorite button -->
     <button
       class="fav-btn"
@@ -152,8 +152,8 @@ function handleBuyNow() {
 }
 
 .product-card:hover {
-  transform: translateY(-12px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.14);
+  transform: translateY(-10px);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.12);
 }
 
 /* Favorite */

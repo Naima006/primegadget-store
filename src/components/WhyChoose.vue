@@ -4,7 +4,7 @@
 
 <div class="container">
 
-<div class="section-title">
+<div class="section-title anim-fade-up">
 
 <h2>Why Choose PrimeGadget?</h2>
 
@@ -16,7 +16,7 @@ Premium technology backed by quality service.
 
 <div class="cards">
 
-<div class="card">
+<div class="card anim-fade-up anim-delay-1">
 
 <i class="bi bi-truck"></i>
 
@@ -30,7 +30,7 @@ Free nationwide delivery on every order.
 
 </div>
 
-<div class="card">
+<div class="card anim-fade-up anim-delay-2">
 
 <i class="bi bi-shield-check"></i>
 
@@ -44,7 +44,7 @@ Free nationwide delivery on every order.
 
 </div>
 
-<div class="card">
+<div class="card anim-fade-up anim-delay-3">
 
 <i class="bi bi-patch-check"></i>
 
@@ -58,7 +58,7 @@ Authentic products with warranty.
 
 </div>
 
-<div class="card">
+<div class="card anim-fade-up anim-delay-4">
 
 <i class="bi bi-headset"></i>
 
@@ -186,4 +186,6 @@ grid-template-columns:1fr;
 
 }
 
+.card i { transition: 0.35s; }
+.card:hover i { transform: scale(1.1); }
 </style>

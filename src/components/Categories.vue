@@ -1,16 +1,17 @@
 <template>
   <section id="categories" class="categories">
     <div class="container">
-      <div class="section-header">
+      <div class="section-header anim-fade-up">
         <h2>Shop by Category</h2>
         <p>Discover premium gadgets across our most popular collections.</p>
       </div>
 
       <div class="category-grid">
         <div
-          v-for="cat in products.categories"
+          v-for="(cat, idx) in products.categories"
           :key="cat.id"
-          class="category-card"
+          class="category-card anim-fade-up"
+          :style="{ animationDelay: (idx * 0.06) + 's' }"
           @click="goToShop(cat.name)"
         >
           <i :class="cat.icon || 'bi bi-tag'"></i>
@@ -82,6 +83,11 @@ function goToShop(category) {
   color: var(--primary);
   margin-bottom: 20px;
   display: block;
+  transition: 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.category-card:hover i {
+  transform: scale(1.12);
 }
 
 .category-card h3 {

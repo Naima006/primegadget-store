@@ -8,17 +8,17 @@
 
     <div class="hero">
 
-      <span class="tag">
+      <span class="tag anim-fade-up">
         About PrimeGadget
       </span>
 
-      <h1>
+      <h1 class="anim-fade-up anim-delay-1">
         Smart Technology.<br>
         Smarter Living.
       </h1>
 
-      <p>
-        PrimeGadget is a modern gadget store built with Vue.js,
+      <p class="anim-fade-up anim-delay-2">
+        PrimeGadget is a modern gadget store
         offering premium electronics, accessories, and smart
         devices with an elegant shopping experience.
       </p>
@@ -27,7 +27,7 @@
 
     <div class="features">
 
-      <div class="feature-card">
+      <div class="feature-card anim-fade-up anim-delay-1">
 
         <i class="bi bi-lightning-charge-fill"></i>
 
@@ -39,7 +39,7 @@
 
       </div>
 
-      <div class="feature-card">
+      <div class="feature-card anim-fade-up anim-delay-2">
 
         <i class="bi bi-shield-check"></i>
 
@@ -51,7 +51,7 @@
 
       </div>
 
-      <div class="feature-card">
+      <div class="feature-card anim-fade-up anim-delay-3">
 
         <i class="bi bi-truck"></i>
 
@@ -170,6 +170,7 @@ transition:.35s;
 .feature-card:hover{
 
 transform:translateY(-10px);
+box-shadow:0 18px 40px rgba(0,0,0,.1);
 
 }
 
@@ -180,7 +181,12 @@ font-size:50px;
 color:var(--primary);
 
 margin-bottom:20px;
+transition:0.35s;
 
+}
+
+.feature-card:hover i{
+transform:scale(1.12);
 }
 
 .feature-card h3{

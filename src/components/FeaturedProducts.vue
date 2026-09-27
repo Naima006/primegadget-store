@@ -1,12 +1,12 @@
 <template>
   <section class="products" :id="sectionId || undefined">
     <div class="container">
-      <div v-if="title || subtitle" class="heading">
+      <div v-if="title || subtitle" class="heading anim-fade-up">
         <h2 v-if="title">{{ title }}</h2>
         <p v-if="subtitle">{{ subtitle }}</p>
       </div>
 
-      <div class="toolbar">
+      <div class="toolbar anim-fade-up anim-delay-1">
         <div class="search-wrap">
           <i class="bi bi-search search-icon"></i>
           <input

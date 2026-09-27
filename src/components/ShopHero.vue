@@ -4,9 +4,9 @@
 
 <div class="container">
 
-<h1>Shop</h1>
+<h1 class="anim-fade-up">Shop</h1>
 
-<p>
+<p class="anim-fade-up anim-delay-1">
 
 Discover premium gadgets for work, gaming, and everyday life.
 

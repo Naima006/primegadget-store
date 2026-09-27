@@ -1,38 +1,61 @@
-# gadget-store
+# PrimeGadget Store
 
-This template should help get you started developing with Vue 3 in Vite.
+A modern, responsive gadget e-commerce **front-end** built with **Vue 3 + Vite**.  
+Products, cart, orders, auth, and admin tools run entirely in the browser via **localStorage** (no backend).
 
-## Recommended IDE Setup
+## Features
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **Storefront** — Home, Shop (search, category filter, pagination), product detail modal  
+- **Cart & checkout** — quantity controls, 5% tax, free shipping, consistent totals  
+- **Orders** — history, status tracking, estimated delivery (5 business days)  
+- **Auth** — register/login, Google Sign-In demo, per-user cart / orders / wishlist  
+- **Wishlist** — favorites synced per account  
+- **Admin portal** — dashboard, products & categories CRUD, image upload, hero editor (live preview), order status
+  <!-- - Demo admin: `admin@primegadget.com` / `admin123`   -->
+- **Support** — Contact, FAQ, Privacy pages  
 
-## Recommended Browser Setup
+## Tech stack
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- Vue 3 (Composition API)  
+- Vue Router  
+- Vite  
+- localStorage for persistence  
+- Bootstrap Icons  
 
-## Customize configuration
+## Getting started
 
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
+```bash
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+Open the URL shown in the terminal (usually `http://localhost:5173`).
 
-```sh
-npm run build
+```bash
+npm run build    # production build → dist/
+npm run preview  # preview production build
 ```
+
+## Project structure (high level)
+
+```
+src/
+  components/   # UI (Hero, ProductCard, Navbar, …)
+  pages/        # Routes (Home, Shop, Cart, Checkout, Admin, …)
+  stores/       # Reactive localStorage state
+  layouts/      # Main + Admin shells
+  utils/        # Pricing & delivery helpers
+  assets/       # CSS, images, seed products
+```
+
+## Notes
+
+- Data lives in **your browser only**. Clearing site data resets the demo.  
+- Admin and customer sessions share the same origin storage keys (scoped by email where applicable).  
+- This is a **portfolio / learning** project.
+
+## License
+
+Copyright © 2026 Naima Rahman. All rights reserved.
+
+This project was built for educational and portfolio demonstration purposes. Personal review and non-commercial inspection are welcome, but redistribution, duplication, or commercial use of this codebase without prior permission is not permitted.

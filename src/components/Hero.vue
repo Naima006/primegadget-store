@@ -2,21 +2,21 @@
   <section class="hero" :style="{ background: hero.config.backgroundColor || '#121212' }">
     <div class="container hero-grid">
       <div class="hero-left">
-        <span class="tag">
+        <span class="tag anim-fade-up">
           {{ hero.config.tag }}
         </span>
 
-        <h1>
+        <h1 class="anim-fade-up anim-delay-1">
           <template v-for="(line, i) in titleLines" :key="i">
             {{ line }}<br v-if="i < titleLines.length - 1" />
           </template>
         </h1>
 
-        <p>
+        <p class="anim-fade-up anim-delay-2">
           {{ hero.config.subtitle }}
         </p>
 
-        <div class="buttons">
+        <div class="buttons anim-fade-up anim-delay-3">
           <button class="primary" @click="go(hero.config.primaryBtnLink)">
             {{ hero.config.primaryBtnText }}
           </button>
@@ -27,8 +27,9 @@
         </div>
       </div>
 
-      <div class="hero-right">
+      <div class="hero-right anim-scale-in anim-delay-2">
         <img
+          class="anim-float"
           :src="hero.config.image"
           alt="Hero product"
         />
@@ -170,6 +171,12 @@ p {
   font-weight: 700;
   border: none;
   color: #121212;
+  transition: 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(198, 255, 74, 0.35);
 }
 
 .secondary {
@@ -178,6 +185,12 @@ p {
   padding: 15px 34px;
   border-radius: 50px;
   color: white;
+  transition: 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-3px);
 }
 
 .hero-right {
