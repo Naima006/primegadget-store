@@ -93,6 +93,15 @@ Place Order
 
 <h2>Order Summary</h2>
 
+<div class="delivery-estimate">
+  <div class="de-icon"><i class="bi bi-truck"></i></div>
+  <div class="de-text">
+    <strong>Estimated delivery</strong>
+    <p>{{ deliveryInfo.label }}</p>
+    <span>{{ deliveryInfo.businessDays }} business days nationwide</span>
+  </div>
+</div>
+
 <div
 v-for="item in cart.items"
 :key="item.id"
@@ -151,6 +160,7 @@ import { addOrder } from "../stores/orders"
 import { products } from "../stores/products"
 
 import { toast } from "../stores/toast"
+import { getEstimatedDelivery, DEFAULT_BUSINESS_DAYS } from "../utils/delivery"
 
 const router = useRouter()
 
@@ -179,6 +189,8 @@ sum + item.price*item.quantity
 ,0)
 
 })
+
+const deliveryInfo = computed(() => getEstimatedDelivery(new Date(), DEFAULT_BUSINESS_DAYS))
 
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((value || "").trim())
@@ -234,6 +246,8 @@ function placeOrder() {
     products.decreaseStock(item.id, item.quantity)
   }
 
+  const eta = getEstimatedDelivery(new Date(), DEFAULT_BUSINESS_DAYS)
+
   addOrder({
     id: Date.now(),
     customer: {
@@ -246,6 +260,9 @@ function placeOrder() {
     items: [...cart.items],
     total: total.value,
     date: new Date().toLocaleString(),
+    estimatedDelivery: eta.label,
+    estimatedDeliveryIso: eta.iso,
+    deliveryBusinessDays: eta.businessDays,
   })
 
   toast.open("Order placed successfully!", "success")
@@ -405,4 +422,47 @@ position:static;
 
 }
 
+
+.delivery-estimate {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: #f0faf0;
+  border: 1px solid #c8e6c8;
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+
+.de-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #121212;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.de-text strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #222;
+}
+
+.de-text p {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a9b3d;
+  margin-bottom: 2px;
+}
+
+.de-text span {
+  font-size: 12px;
+  color: #666;
+}
 </style>

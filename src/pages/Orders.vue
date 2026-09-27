@@ -38,6 +38,27 @@
               {{ item.name }} × {{ item.quantity }}
             </div>
 
+            <div
+              v-if="order.estimatedDelivery && order.status !== 'Cancelled' && order.status !== 'Delivered'"
+              class="eta"
+            >
+              <i class="bi bi-truck"></i>
+              <span>
+                Estimated delivery:
+                <strong>{{ order.estimatedDelivery }}</strong>
+                <em v-if="order.deliveryBusinessDays">
+                  ({{ order.deliveryBusinessDays }} business days)
+                </em>
+              </span>
+            </div>
+            <div
+              v-else-if="order.status === 'Delivered'"
+              class="eta delivered"
+            >
+              <i class="bi bi-check-circle"></i>
+              <span>Delivered</span>
+            </div>
+
             <div class="total">Total: ${{ order.total }}</div>
           </div>
         </div>
@@ -190,6 +211,41 @@ function statusClass(s) {
   margin-top: 14px;
   font-weight: 800;
   font-size: 18px;
+}
+
+.eta {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: #f0faf0;
+  border-radius: 12px;
+  font-size: 13px;
+  color: #333;
+  line-height: 1.4;
+}
+
+.eta i {
+  color: #1a9b3d;
+  font-size: 16px;
+  margin-top: 1px;
+}
+
+.eta strong {
+  font-weight: 700;
+}
+
+.eta em {
+  font-style: normal;
+  color: #666;
+  font-size: 12px;
+}
+
+.eta.delivered {
+  background: #e8f5e9;
+  color: #1a9b3d;
+  font-weight: 600;
 }
 
 .empty {

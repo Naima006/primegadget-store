@@ -43,7 +43,7 @@ alt="Headphones"
   Sign in to your PrimeGadget account
 </p>
 <p class="admin-hint">
-  Admin demo: <strong>admin@primegadget.com</strong> / <strong>admin123</strong>
+  <strong>admin@primegadget.com</strong> &nbsp <strong>admin123</strong>
 </p>
 
 <form @submit.prevent="login">
@@ -253,7 +253,6 @@ function login() {
 
 .card p {
   color: #bfbfbf;
-  margin-bottom: 30px;
 }
 
 input {
@@ -381,12 +380,11 @@ button:hover {
 }
 
 .admin-hint {
-  font-size: 13px;
+  font-size: 8px;
   color: #9a9a9a;
-  background: rgba(198, 255, 74, 0.08);
-  border: 1px solid rgba(198, 255, 74, 0.25);
+  /*background: rgba(198, 255, 74, 0.08);*/
+  /*border: 1px solid rgba(198, 255, 74, 0.25);*/
   border-radius: 10px;
-  padding: 10px 14px;
   margin: 12px 0 18px;
   line-height: 1.45;
   word-break: break-word;
@@ -396,8 +394,8 @@ button:hover {
 }
 
 .admin-hint strong {
-  color: var(--primary);
-  font-weight: 600;
+  color: #00000000;
+  font-weight: 200;
 }
 
 @keyframes fadeUp {
@@ -528,8 +526,8 @@ button:hover {
   }
 
   .admin-hint {
-    font-size: 12px;
-    padding: 9px 12px;
+    /*font-size: 12px;*/
+    /*padding: 9px 12px;*/
   }
 }
 

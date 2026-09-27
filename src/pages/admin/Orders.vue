@@ -70,6 +70,12 @@
             <span v-if="order.customer.phone"> · {{ order.customer.phone }}</span>
           </div>
 
+          <div v-if="order.estimatedDelivery" class="eta-admin">
+            <i class="bi bi-truck"></i>
+            Est. delivery: <strong>{{ order.estimatedDelivery }}</strong>
+            <span v-if="order.deliveryBusinessDays"> · {{ order.deliveryBusinessDays }} business days</span>
+          </div>
+
           <div class="order-actions">
             <label>Update status</label>
             <select
@@ -340,6 +346,7 @@ function onStatusChange(id, status) {
 .order-actions {
   display: flex;
   align-items: center;
+  margin-top: 12px;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -376,5 +383,25 @@ function onStatusChange(id, status) {
   .order-meta {
     grid-template-columns: 1fr;
   }
+}
+
+.eta-admin {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(198, 255, 74, 0.08);
+  border: 1px solid rgba(198, 255, 74, 0.2);
+  border-radius: 10px;
+  font-size: 13px;
+  color: #bbb;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eta-admin i {
+  color: var(--primary);
+}
+.eta-admin strong {
+  color: #e8e8e8;
 }
 </style>

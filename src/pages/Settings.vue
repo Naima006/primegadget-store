@@ -28,9 +28,9 @@
             <span class="value">{{ auth.isAdmin ? "Store Admin" : "Customer" }}</span>
           </div>
 
-          <p class="note">
+          <!-- <p class="note">
             This is a front-end demo. Profile edits and password changes would require a backend in a production app.
-          </p>
+          </p> -->
 
           <button class="logout" @click="logout">
             <i class="bi bi-box-arrow-right"></i>
